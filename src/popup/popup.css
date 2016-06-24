@@ -1,0 +1,39 @@
+.login_item_box {
+    min-width: 200px;
+}
+.login_item_box small {
+    font-weight: bold;
+    color: #434343;
+}
+
+.login_itemlist_wrap {
+}
+
+.login_itemlist_wrap ul {
+    margin: auto;
+    padding: 0px 0px;
+}
+
+
+.login_itemlist_wrap li{
+    list-style: none;
+    padding: 5px 20px;
+    cursor: pointer;
+}
+
+.login_itemlist_wrap li:hover{
+    background: rgb(237,242,255);
+}
+
+.login_itemlist_wrap li p{
+    font-weight: bold;
+    font-size: 16px;
+    color: #2c82bb;
+    font-family: 微软雅黑, 宋体, 幼圆;
+    line-height: 50%;
+}
+.login_itemlist_wrap li small {
+    color: #434343;
+    font-size: 12px;
+    font-weight:100;
+}

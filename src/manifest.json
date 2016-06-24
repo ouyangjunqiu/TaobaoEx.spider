@@ -1,0 +1,129 @@
+{
+    "manifest_version": 2,
+    "version": "3.1.0",
+    "name": "精准投放平台操作助手",
+    "description": "直通车、钻石展位浏览器快捷操作助手",
+    "background": {
+        "scripts": ["jquery-2.0.0.min.js", "background.js"]
+    },
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup/popup.html"
+    },
+    "icons":{
+        "128":"icon.png",
+        "16":"icon.png"
+    },
+    "permissions": [
+        "tabs",
+        "webRequest",
+        "notifications",
+        "http://cps.da-mai.com/*",
+        "http://beta.cps.da-mai.com/*",
+        "http://yj.da-mai.com/*",
+        "webNavigation",
+        "https://login.taobao.com/*",
+        "https://mai.taobao.com/*",
+        "https://s.taobao.com/*",
+        "https://shopsearch.taobao.com/*",
+        "http://subway.simba.taobao.com/*",
+        "http://zuanshi.taobao.com/*",
+        "http://www.alimama.com/member/login.htm*",
+        "http://dmp.taobao.com/index.html*",
+        "https://travel.alitrip.com/*",
+        "https://beta.sycm.taobao.com/*",
+        "https://bda.sycm.taobao.com/*",
+        "https://diy.sycm.taobao.com/*",
+        "https://sycm.taobao.com/*",
+        "https://diy.sycm.taobao.com/*",
+        "http://sem.taobao.com/*"
+
+    ],
+    "content_scripts": [
+        {
+            "matches": ["http://cps.da-mai.com/*" ,"http://beta.cps.da-mai.com/*"],
+            "js": ["jquery-2.0.0.min.js","cps_script.js"],
+            "all_frames": true
+        },
+        {
+            "matches": ["http://yj.da-mai.com/*"],
+            "js": ["jquery-2.0.0.min.js","yj_script.js"],
+            "all_frames": true
+        },
+        {
+            "matches": ["https://login.taobao.com/*","http://www.alimama.com/member/login.htm*"],
+            "js": ["taobao_login.js"],
+            "run_at": "document_end",
+            "all_frames": true
+        },
+        {
+            "matches": ["http://subway.simba.taobao.com/*"],
+            "js": ["jquery-2.0.0.min.js","subway_login.js"],
+            "run_at": "document_end",
+            "all_frames": true
+        },{
+            "matches":["https://unit.login.taobao.com/*"],
+            "js":["taobao_login.js"],
+            "run_at":"document_end",
+            "all_frames":true
+        },{
+            "matches":["http://zuanshi.taobao.com/*"],
+            "js":["jquery-2.0.0.min.js","date.js","zuanshi.js","select2/select2.min.js"],
+            "css":["select2/select2.min.css","zuanshi/base.css"],
+            "run_at":"document_end",
+            "all_frames":true
+        },{
+            "matches":["http://dmp.taobao.com/index.html*"],
+            "js":["jquery-2.0.0.min.js","date.js","dmp.js"],
+            "run_at":"document_end",
+            "all_frames":true
+        },{
+            "matches":["https://s.taobao.com/*"],
+            "js":["jquery-2.0.0.min.js","taobao_search.js"],
+            "css":["taobaosearch/base.css"],
+            "run_at":"document_end",
+            "all_frames":true
+        },{
+            "matches":["https://travel.alitrip.com/*"],
+            "js":["jquery-2.0.0.min.js","alitrip.js"],
+            "run_at":"document_end",
+            "all_frames":true
+        },{
+            "matches":["https://shopsearch.taobao.com/*"],
+            "js":["jquery-2.0.0.min.js","taobao_shopsearch.js"],
+            "run_at":"document_end",
+            "all_frames":true
+        },
+        {
+            "matches":["https://beta.sycm.taobao.com/*","https://sycm.taobao.com/*"],
+            "js":["jquery-2.0.0.min.js","sycm.js"],
+            "run_at":"document_end",
+            "all_frames":true
+        },
+        {
+            "matches":["http://sem.taobao.com/*"],
+            "js":["jquery-2.0.0.min.js","sem_taobao_do.js"],
+            "run_at":"document_end",
+            "all_frames":true
+        },
+        {
+            "matches":["http://sem.taobao.com/index.do"],
+            "js":["jquery-2.0.0.min.js","sem_taobao_do.js"],
+            "run_at":"document_end",
+            "all_frames":true
+        },
+        {
+            "matches":["http://sem.taobao.com/index.do#!/customers/exists/list/*"],
+            "js":["jquery-2.0.0.min.js","sem_taobao_do.js"],
+            "run_at":"document_end",
+            "all_frames":true
+        },{
+            "matches":["http://trunks.da-mai.com/*","http://trunks2.da-mai.com/*","http://oa.da-mai.com/*","http://oa2.da-mai.com/*"],
+            "js":["jquery-2.0.0.min.js", "oa_script.js"],
+            "all_frames":true
+        }
+    ],
+    "web_accessible_resources":[
+        "icon.png"
+    ]
+}

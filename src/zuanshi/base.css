@@ -1,0 +1,242 @@
+.select2-container {
+    z-index: 100000;
+}
+
+#CPS_tools_container {
+    position: fixed;
+    width:477px;
+    /*height:462px;*/
+    left: 30%;
+    top: 2%;
+    background-color: #fff;
+    border: 1px solid #E6E6E6;
+    border-radius: 6px;
+    display: none;
+    z-index: 99999;
+}
+
+#CPS_tools_container.left {
+    left:10px !important;
+    max-width: 515px;
+}
+
+#CPS_tools_container .hd {
+    border-bottom:  1px solid #4d7fff;
+    position: relative;
+}
+
+#CPS_tools_container .panel {
+    position: relative;
+}
+
+#CPS_tools_container .tools {
+    position: absolute;
+    left: 10px;
+    bottom: 2px;
+}
+
+#cls-btn {
+    position: absolute;
+    top: 4px;
+    right: 20px;
+}
+
+#CPS_tools_container .hd p {
+    margin:10px;font-size: 16px;font-weight: bold;
+}
+
+#CPS_tools_container .table td {
+    padding:10px;
+}
+
+#CPS_tools_container .content {
+    padding: 10px;
+}
+
+#CPS_tools_container .content .row {
+    border-top: 1px solid #e6e6e6;padding: 10px 10px;
+}
+#CPS_tools_container .content .row:first-child {
+    border: none;
+}
+
+
+#CPS_tools_container .CPS_bt {
+    min-width: 100px;
+    font-size: 12px;
+    color: #FFF!important;
+    background-color: #4d7fff;
+    background-image: none;
+    display: inline-block;
+    /*height: 32px;*/
+    padding: 6px;
+    /*padding: 6px 12px;*/
+    margin-bottom: 0;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    outline: 0!important;
+}
+
+#CPS_tools_menu {
+    position: fixed;right: 2px;line-height: 1.3;font-size:12px;font-family: arial,'Hiragino Sans GB',"\5b8b\4f53",sans-serif;text-align: center !important;bottom: 30%;background-color: #fff;border: 1px solid #E6E6E6;border-radius: 6px;width: 30px !important;cursor: pointer;padding: 7px 5px;
+}
+
+#CPS_tools_menu.left {
+    left: 2px !important;
+}
+
+#adzone_data_json{
+    display: none;
+}
+
+#CPS_campaign_alert {
+    position: fixed;
+    top: 2px;
+    left: 10%;
+    z-index: 119;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(230, 230, 230);
+    border-radius: 6px;
+}
+
+#CPS_campaign_alert .h {
+    position: relative;
+    border-bottom: 1px solid rgb(77, 127, 255);
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#CPS_campaign_alert .c {
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#CPS_campaign_alert .c p {
+    padding-bottom:5px;
+}
+
+#CPS_campaign_alert .c p strong {
+    padding-right: 5px;
+}
+
+#CPS_campaign_alert .c em {
+    font-weight: bold;
+    color: #fa6e50;
+}
+
+#CPS_campaign_alert .f {
+    border-top: 1px solid rgb(230, 230, 230);
+    padding: 10px;
+}
+
+#CPS_campaign_alert .f .btns button{
+    margin-right: 15px;
+}
+
+
+/**创意**/
+#CPS_adboard_alert {
+    position: fixed;
+    top: 2px;
+    left: 60%;
+    z-index: 119;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(230, 230, 230);
+    border-radius: 6px;
+}
+
+#CPS_adboard_alert .h {
+    position: relative;
+    border-bottom: 1px solid rgb(77, 127, 255);
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#CPS_adboard_alert .c {
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#CPS_adboard_alert .c p {
+    padding-bottom:5px;
+}
+
+#CPS_adboard_alert .c p strong {
+    padding-right: 5px;
+}
+
+#CPS_adboard_alert .c em {
+    font-weight: bold;
+    color: #fa6e50;
+}
+
+#CPS_adboard_alert .f {
+    border-top: 1px solid rgb(230, 230, 230);
+    padding: 10px;
+}
+
+#CPS_adboard_alert .f .btns button{
+    margin-right: 15px;
+}
+
+#CPS_layout_menu {
+    position: fixed;
+    left: 2px;
+    bottom: 20px;
+    z-index: 99998;
+}
+
+.icon {
+    background: url('chrome-extension://__MSG_@@extension_id__/icon.png') no-repeat;
+    display: block;
+    width: 64px;
+    height: 64px;
+    zoom: 0.46;
+}
+
+.img_box {
+    border: 1px solid #3499dc;
+    border-radius: 16px;
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    cursor:pointer;
+}
+
+#CPS_layout_menu ul {
+    background-color: #fff;
+    border: 1px solid #3499dc;;
+    border-radius: 6px;
+    margin-left: 15px;
+    padding: 15px 5px;
+}
+
+#CPS_layout_menu ul li {
+    padding: 5px 20px;
+}
+
+#CPS_layout_icon {
+    display: block;
+    position: absolute;
+    bottom: -10px;
+    background: white;
+    border-radius: 16px;
+}
