@@ -10,6 +10,56 @@
     CPS.adgroup = {};
     CPS.adzone = {};
     CPS.rpt = {};
+    CPS.storage = {};
+    CPS.mutex = {};
+
+    /**
+     * 存储数据
+     * @param k
+     * @param v
+     * @version 3.1.2
+     */
+    CPS.storage.set = function(k,v){
+        var w = new WebStorageCache();
+        w.set(k,v,{exp:8*3600});
+    };
+
+    /**
+     *
+     * @param k
+     * @returns {*}
+     * @version 3.1.2
+     */
+    CPS.storage.get = function(k){
+        var w = new WebStorageCache();
+        return w.get(k);
+    };
+
+    /**
+     * 检测是否锁定
+     * @param i
+     * @returns {boolean}
+     */
+    CPS.mutex.is = function(i){
+        var f = new DateFormat();
+        var k = "zuanshi.mutex.has."+ CPS.app.shopId+"."+i;
+        var d = CPS.storage.get(k);
+        var now = f.formatCurrentDate("yyyy-MM-dd");
+
+        return !!(d && (d["d"] == now));
+    };
+    /**
+     * 加锁
+     * @param i
+     */
+    CPS.mutex.lock = function(i){
+        var f = new DateFormat();
+        var k = "zuanshi.mutex.has."+ CPS.app.shopId+"."+i;
+        var c = {d: f.formatCurrentDate("yyyy-MM-dd")};
+        CPS.storage.set(k,c);
+    };
+
+
     CPS.app.start = function () {
         CPS.app.init();
     };
@@ -60,7 +110,7 @@
                         CPS.app.getAdvertiserHour();
                         CPS.app.campaignRptnToday();
 
-                        CPS.app.validate();
+                        CPS.app.run();
                     }
 
 
@@ -151,216 +201,63 @@
         });
     };
 
-
-    CPS.rpt.has = function(i){
-        var f = new DateFormat();
-        var d = window.localStorage.getItem("zuanshi.rpt.has."+ CPS.app.shopId);
-        if(d){
-            var c = JSON.parse(d);
-            var now = f.formatCurrentDate("yyyy-MM-dd");
-            return !!(c && c[i] && (c[i]["date"] == now) && c[i]["v"]);
-        }
-        return false;
-    };
-
-    CPS.rpt.setHas = function(i){
-        var f = new DateFormat();
-
-        var d = window.localStorage.getItem("zuanshi.rpt.has."+ CPS.app.shopId);
-        if(d){
-            var c = JSON.parse(d);
-            if(!c){
-                c = {};
-            }
-            c[i] = {date: f.formatCurrentDate("yyyy-MM-dd"),v:true};
-            window.localStorage.setItem("zuanshi.rpt.has."+ CPS.app.shopId,JSON.stringify(c));
-        }else{
-            var c = {};
-            c[i] = {date: f.formatCurrentDate("yyyy-MM-dd"),v:true};
-            window.localStorage.setItem("zuanshi.rpt.has."+ CPS.app.shopId,JSON.stringify(c));
-        }
-    };
-
     /**
-     * 检测平台是否下载过店铺历史报表
-     * @version 3.0.5
+     * 运行
+     * @version 3.1.2
      */
-    CPS.app.validate = function () {
-        if(!CPS.rpt.has("rpt1")){
-            CPS.app.accountRpt();
-        }
+    CPS.app.run = function () {
 
-        if(!CPS.rpt.has("rpt2")){
-            CPS.app.accountRpt2();
-        }
+        CPS.app.accountRpt();
 
-        if(!CPS.rpt.has("adboard1")){
-            CPS.app.rptnAdboardAll();
-        }
+        CPS.app.accountRpt2();
 
-        if(!CPS.rpt.has("adboard2")){
-            CPS.app.rptnAdboardAll2();
-        }
+        CPS.app.rptnAdboardAll();
 
-        if(!CPS.rpt.has("dest1")){
-            CPS.app.rptnDestAll();
-        }
+        CPS.app.rptnAdboardAll2();
 
-        if(!CPS.rpt.has("dest2")){
-            CPS.app.rptnDestAll2();
-        }
+        CPS.app.rptnDestAll();
 
-        if(!CPS.rpt.has("adzone1")){
-            CPS.app.rptnAdzoneAll();
-        }
+        CPS.app.rptnDestAll2();
 
-        if(!CPS.rpt.has("adzone2")){
-            CPS.app.rptnAdzoneAll2();
-        }
+        CPS.app.rptnAdzoneAll();
 
-        if(!CPS.rpt.has("destadzone")){
-            CPS.app.rptnDestAdzoneAll2();
-        }
+        CPS.app.rptnAdzoneAll2();
 
-        //setTimeout(function () {
-        //    $.ajax({
-        //        url: 'http://cps.da-mai.com/zuanshi/rpt/hasget2.html',
-        //        dataType: 'json',
-        //        data: {nick:  CPS.app.nick},
-        //        type: 'post',
-        //        success: function (resp) {
-        //            if (resp.data && !resp.data.hasget) {
-        //                CPS.app.accountRpt();
-        //                CPS.app.accountRpt2();
-        //            }
-        //        }
-        //    });
-        //}, 2000);
-        //setTimeout(function () {
-        //    $.ajax({
-        //        url: 'http://cps.da-mai.com/zuanshi/adboard/hasget.html',
-        //        dataType: 'json',
-        //        data: {nick:  CPS.app.nick},
-        //        type: 'post',
-        //        success: function (resp) {
-        //            if (resp.data && !resp.data.hasget) {
-        //                CPS.app.rptnAdboardAll();
-        //            }
-        //        }
-        //    });
-        //
-        //    var dateFormat = new DateFormat();
-        //    var dateStr= dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
-        //    $.ajax({
-        //        url: 'http://cps.da-mai.com/bigdata/adboard/hasget.html',
-        //        dataType: 'json',
-        //        data: {nick:  CPS.app.nick,logdate:dateStr},
-        //        type: 'post',
-        //        success: function (resp) {
-        //            if (resp.data && !resp.data.hasget) {
-        //                CPS.app.rptnAdboardAll2();
-        //            }
-        //        }
-        //    });
-        //}, 3000);
-        //setTimeout(function () {
-        //    $.ajax({
-        //        url: 'http://cps.da-mai.com/zuanshi/dest/hasget.html',
-        //        dataType: 'json',
-        //        data: {nick:  CPS.app.nick},
-        //        type: 'post',
-        //        success: function (resp) {
-        //            if (resp.data && !resp.data.hasget) {
-        //                CPS.app.rptnDestAll();
-        //            }
-        //        }
-        //    });
-        //
-        //    var dateFormat = new DateFormat();
-        //    var dateStr= dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
-        //    $.ajax({
-        //        url: 'http://cps.da-mai.com/bigdata/dest/hasget.html',
-        //        dataType: 'json',
-        //        data: {nick:  CPS.app.nick,logdate:dateStr},
-        //        type: 'post',
-        //        success: function (resp) {
-        //            if (resp.data && !resp.data.hasget) {
-        //                CPS.app.rptnDestAll2();
-        //            }
-        //        }
-        //    });
-        //
-        //    $.ajax({
-        //        url: 'http://cps.da-mai.com/bigdata/destadzone/hasget.html',
-        //        dataType: 'json',
-        //        data: {nick:  CPS.app.nick,logdate:dateStr},
-        //        type: 'post',
-        //        success: function (resp) {
-        //            if (resp.data && !resp.data.hasget) {
-        //                CPS.app.rptnDestAdzoneAll2();
-        //            }
-        //        }
-        //    });
-        //
-        //
-        //}, 4000);
-        //setTimeout(function () {
-        //
-        //    $.ajax({
-        //        url: 'http://cps.da-mai.com/zuanshi/adzonerpt/hasget.html',
-        //        dataType: 'json',
-        //        data: {nick:  CPS.app.nick},
-        //        type: 'post',
-        //        success: function (resp) {
-        //            if (resp.data && !resp.data.hasget) {
-        //                CPS.app.rptnAdzoneAll();
-        //            }
-        //        }
-        //    });
-        //
-        //    var dateFormat = new DateFormat();
-        //    var dateStr= dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
-        //    $.ajax({
-        //        url: 'http://cps.da-mai.com/bigdata/adzone/hasget.html',
-        //        dataType: 'json',
-        //        data: {nick:  CPS.app.nick,logdate:dateStr},
-        //        type: 'post',
-        //        success: function (resp) {
-        //            if (resp.data && !resp.data.hasget) {
-        //                CPS.app.rptnAdzoneAll2();
-        //            }
-        //        }
-        //    });
-        //}, 5000);
+        CPS.app.rptnDestAdzoneAll2();
+
     };
 
     /**
      *  获取展示网络报表
-     *  @version 2.9.6
+     *  @version 3.1.2
      */
     CPS.app.accountRpt = function () {
+        if(CPS.mutex.is("rpt1")) return false;
+
+        var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
-            var dateFormat = new DateFormat();
-            var endDateStr= dateFormat.addDays(new Date(), -1, "yyyy-MM-dd");
-            var beginDateStr = dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
+            var f = new DateFormat();
+            var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
+            var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
             $.ajax({
                 url: 'http://zuanshi.taobao.com/rptn/advertiserCmDay/all.json',
                 dataType: 'json',
-                data: {csrfID:  CPS.app.csrfID, startTime: beginDateStr, endTime: endDateStr, campaignModel: 1},
+                data: {csrfID:  CPS.app.csrfID, startTime: b, endTime: e, campaignModel: 1},
                 type: 'get',
                 success: function (data) {
                     CPS.app.postAccountRpt(data);
                 }
             });
 
-        }, 2000);
+        }, t);
     };
 
     /**
      * 提交展示网络报表到平台
-     * @version 2.9.6
+     * @version 3.1.2
      */
     CPS.app.postAccountRpt = function (rpts) {
+        var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
             $.ajax({
                 url: 'http://cps.da-mai.com/zuanshi/rpt/source.html',
@@ -368,11 +265,11 @@
                 data: {userinfo: CPS.app.csrfID, rpts: JSON.stringify(rpts), nick: CPS.app.nick},
                 type: 'post',
                 success: function (data) {
-                    CPS.rpt.setHas("rpt1")
+                    CPS.mutex.lock("rpt1")
                 }
             });
 
-        }, 1000);
+        }, t);
     };
 
     /**
@@ -380,21 +277,23 @@
      *  @version 2.9.6
      */
     CPS.app.accountRpt2 = function () {
+        if(CPS.mutex.is("rpt2")) return false;
+        var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
-            var dateFormat = new DateFormat();
-            var endDateStr= dateFormat.addDays(new Date(), -1, "yyyy-MM-dd");
-            var beginDateStr = dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
+            var f = new DateFormat();
+            var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
+            var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
             $.ajax({
                 url: 'http://zuanshi.taobao.com/rptn/advertiserCmDay/all.json',
                 dataType: 'json',
-                data: {csrfID:  CPS.app.csrfID, startTime: beginDateStr, endTime: endDateStr, campaignModel: 2},
+                data: {csrfID:  CPS.app.csrfID, startTime: b, endTime: e, campaignModel: 2},
                 type: 'get',
                 success: function (data) {
                     CPS.app.postAccountRpt2(data);
                 }
             });
 
-        }, 2000);
+        }, t);
     };
 
     /**
@@ -402,6 +301,7 @@
      * @version 2.9.6
      */
     CPS.app.postAccountRpt2 = function (rpts) {
+        var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
             $.ajax({
                 url: 'http://cps.da-mai.com/zuanshi/rpt/source2.html',
@@ -409,11 +309,11 @@
                 data: {userinfo: CPS.app.csrfID, rpts: JSON.stringify(rpts), nick: CPS.app.nick},
                 type: 'post',
                 success: function (data) {
-                    CPS.rpt.setHas("rpt2")
+                    CPS.mutex.lock("rpt2")
                 }
             });
 
-        }, 1000);
+        }, t);
     };
 
     /**
@@ -421,6 +321,7 @@
      * @version 2.9.6
      */
     CPS.app.getAdvertiserHour = function(){
+        var t = parseInt(Math.random()*2000+500);
         setTimeout(function () {
             var dateFormat = new DateFormat();
             var logDateStr = dateFormat.addDays(new Date(), -1, "yyyy-MM-dd");
@@ -460,7 +361,7 @@
                     }
                 }
             })
-        },1000);
+        },t);
     };
 
 
@@ -469,8 +370,16 @@
      * @version 2.9.7
      *
      */
-    CPS.app.rptnAdboardDayList = function(beginDateStr,endDateStr,offset,fn){
-        var t = parseInt(Math.random()*1000+offset/200*100);
+    CPS.app.rptnAdboardDayList = function(b,e,offset,fn){
+        var k = "adboard."+b+"."+e+"."+offset;
+        if(offset>0 && CPS.mutex.is(k)){
+            return false;
+        }else if(offset<=0 && CPS.mutex.is(k)){
+            var d = CPS.storage.get(k+".data");
+            fn(d,offset);
+            return true;
+        }
+        var t = parseInt(Math.random()*1000+offset*10);
         var r = function() {
 
             return $.ajax({
@@ -478,9 +387,9 @@
                 dataType: 'json',
                 data: {
                     csrfID: CPS.app.csrfID,
-                    startTime: beginDateStr,
-                    endTime: endDateStr,
-                    pageSize: 200,
+                    startTime: b,
+                    endTime: e,
+                    pageSize: 100,
                     offset: offset,
                     campaignModel: 1,
                     campaignName: "",
@@ -491,8 +400,12 @@
                 },
                 type: 'get',
                 success: function (resp) {
-                    if (resp && resp.data) {
+                    if (resp && resp.info && resp.info.ok) {
+                        CPS.mutex.lock(k);
                         fn(resp.data, offset);
+                        if(offset<=0){
+                            CPS.storage.set(k+".data",resp.data);
+                        }
                     }
 
                 }
@@ -507,21 +420,20 @@
      *
      */
     CPS.app.rptnAdboardAll = function(){
-        var dateFormat = new DateFormat();
-        var endDateStr = dateFormat.addDays(new Date(), -1, "yyyy-MM-dd");
-        var beginDateStr = dateFormat.addDays(new Date(), -7, "yyyy-MM-dd");
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -7, "yyyy-MM-dd");
 
-        CPS.app.rptnAdboardDayList(beginDateStr,endDateStr,0,function(data){
+        CPS.app.rptnAdboardDayList(b,e,0,function(data){
 
             CPS.app.postRptnAboard(data,0);
 
-            for(var offset = 200;offset < data.count;offset+=200){
+            for(var offset = 100;offset < data.count;offset+=100){
 
-                    CPS.app.rptnAdboardDayList(beginDateStr,endDateStr,offset,function(rpt,i){
+                CPS.app.rptnAdboardDayList(b,e,offset,function(rpt,i){
 
-                        CPS.app.postRptnAboard(rpt,i);
-
-                    });
+                    CPS.app.postRptnAboard(rpt,i);
+                });
 
             }
 
@@ -541,7 +453,6 @@
             },
             dataType:"json",
             success:function(){
-                CPS.rpt.setHas("adboard1")
             }
         })
     };
@@ -552,18 +463,18 @@
      *
      */
     CPS.app.rptnAdboardAll2 = function(){
-        var dateFormat = new DateFormat();
-        var endDateStr = dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
-        var beginDateStr = dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -16, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
 
-        CPS.app.rptnAdboardDayList(beginDateStr,endDateStr,0,function(data){
+        CPS.app.rptnAdboardDayList(b,e,0,function(data){
 
-            CPS.app.postRptnAboard2(data,beginDateStr,0);
+            CPS.app.postRptnAboard2(data,e,0);
 
-            for(var offset = 200;offset < data.count;offset+=200){
+            for(var offset = 100;offset < data.count;offset+=100){
 
-                CPS.app.rptnAdboardDayList(beginDateStr,endDateStr,offset,function(rpt,i){
-                    CPS.app.postRptnAboard2(rpt,beginDateStr,i);
+                CPS.app.rptnAdboardDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnAboard2(rpt,b,i);
 
                 });
 
@@ -585,7 +496,6 @@
             },
             dataType:"json",
             success:function(){
-                CPS.rpt.setHas("adboard2")
             }
         })
     };
@@ -595,8 +505,16 @@
      * @version 2.9.7
      *
      */
-    CPS.app.rptnDestDayList = function(beginDateStr,endDateStr,offset,fn){
-        var t = parseInt(Math.random()*1000+offset/200*100);
+    CPS.app.rptnDestDayList = function(b,e,offset,fn){
+        var k = "dest."+b+"."+e+"."+offset;
+        if(offset>0 && CPS.mutex.is(k)){
+            return false;
+        }else if(offset<=0 && CPS.mutex.is(k)){
+            var d = CPS.storage.get(k+".data");
+            fn(d,offset);
+            return true;
+        }
+        var t = parseInt(Math.random()*1000+offset*10);
         var r = function() {
 
             return $.ajax({
@@ -604,8 +522,8 @@
                 dataType: 'json',
                 data: {
                     csrfID: CPS.app.csrfID,
-                    startTime: beginDateStr,
-                    endTime: endDateStr,
+                    startTime: b,
+                    endTime: e,
                     pageSize: 200,
                     offset: offset,
                     campaignModel: 1,
@@ -617,8 +535,12 @@
                 },
                 type: 'get',
                 success: function (resp) {
-                    if (resp && resp.data) {
+                    if (resp && resp.info && resp.info.ok) {
+                        CPS.mutex.lock(k);
                         fn(resp.data, offset);
+                        if(offset<=0){
+                            CPS.storage.set(k+".data",resp.data);
+                        }
                     }
                 }
             })
@@ -632,17 +554,18 @@
      *
      */
     CPS.app.rptnDestAll = function(){
-        var dateFormat = new DateFormat();
-        var endDateStr = dateFormat.addDays(new Date(), -1, "yyyy-MM-dd");
-        var beginDateStr = dateFormat.addDays(new Date(), -7, "yyyy-MM-dd");
 
-        CPS.app.rptnDestDayList(beginDateStr,endDateStr,0,function(data){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -7, "yyyy-MM-dd");
+
+        CPS.app.rptnDestDayList(b,e,0,function(data){
 
             CPS.app.postRptnDest(data,0);
 
             for(var offset = 200;offset < data.count;offset+=200){
 
-                CPS.app.rptnDestDayList(beginDateStr,endDateStr,offset,function(rpt,i){
+                CPS.app.rptnDestDayList(b,e,offset,function(rpt,i){
                     CPS.app.postRptnDest(rpt,i);
                 });
 
@@ -665,7 +588,6 @@
             },
             dataType:"json",
             success:function(){
-                CPS.rpt.setHas("dest1")
             }
         })
     };
@@ -677,17 +599,17 @@
      *
      */
     CPS.app.rptnDestAll2 = function(){
-        var dateFormat = new DateFormat();
-        var endDateStr = dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
-        var beginDateStr = dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
-        CPS.app.rptnDestDayList(beginDateStr,endDateStr,0,function(data){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -16, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
+        CPS.app.rptnDestDayList(b,e,0,function(data){
 
-            CPS.app.postRptnDest2(data,beginDateStr,0);
+            CPS.app.postRptnDest2(data,b,0);
 
             for(var offset = 200;offset < data.count;offset+=200){
 
-                CPS.app.rptnDestDayList(beginDateStr,endDateStr,offset,function(rpt,i){
-                    CPS.app.postRptnDest2(rpt,beginDateStr,i);
+                CPS.app.rptnDestDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnDest2(rpt,b,i);
                 });
 
             }
@@ -709,7 +631,6 @@
             },
             dataType:"json",
             success:function(){
-                CPS.rpt.setHas("dest2")
             }
         })
     };
@@ -719,8 +640,17 @@
      * @version 2.9.7
      *
      */
-    CPS.app.rptnDestAdzoneDayList = function(beginDateStr,endDateStr,offset,fn){
-        var t = parseInt(Math.random()*1000+offset/200*100);
+    CPS.app.rptnDestAdzoneDayList = function(b,e,offset,fn){
+        var k = "destadzone."+b+"."+e+"."+offset;
+        if(offset>0 && CPS.mutex.is(k)){
+            return false;
+        }else if(offset<=0 && CPS.mutex.is(k)){
+            var d = CPS.storage.get(k+".data");
+            fn(d,offset);
+            return true;
+        }
+
+        var t = parseInt(Math.random()*1000+offset*10);
         var r = function() {
 
             return $.ajax({
@@ -728,8 +658,8 @@
                 dataType: 'json',
                 data: {
                     csrfID: CPS.app.csrfID,
-                    startTime: beginDateStr,
-                    endTime: endDateStr,
+                    startTime: b,
+                    endTime: e,
                     pageSize: 200,
                     offset: offset,
                     campaignModel: 1,
@@ -740,8 +670,12 @@
                 },
                 type: 'get',
                 success: function (resp) {
-                    if (resp && resp.data) {
+                    if (resp && resp.info && resp.info.ok) {
+                        CPS.mutex.lock(k);
                         fn(resp.data, offset);
+                        if(offset<=0){
+                            CPS.storage.set(k+".data",resp.data);
+                        }
                     }
 
                 }
@@ -756,17 +690,17 @@
      *
      */
     CPS.app.rptnDestAdzoneAll2 = function(){
-        var dateFormat = new DateFormat();
-        var endDateStr = dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
-        var beginDateStr = dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
-        CPS.app.rptnDestAdzoneDayList(beginDateStr,endDateStr,0,function(data){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -16, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
+        CPS.app.rptnDestAdzoneDayList(b,e,0,function(data){
 
-            CPS.app.postRptnDestAdzone2(data,beginDateStr,0);
+            CPS.app.postRptnDestAdzone2(data,b,0);
 
             for(var offset = 200;offset < data.count;offset+=200){
 
-                CPS.app.rptnDestAdzoneDayList(beginDateStr,endDateStr,offset,function(rpt,i){
-                    CPS.app.postRptnDestAdzone2(rpt,beginDateStr,i);
+                CPS.app.rptnDestAdzoneDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnDestAdzone2(rpt,b,i);
                 });
 
             }
@@ -788,18 +722,26 @@
             },
             dataType:"json",
             success:function(){
-                CPS.rpt.setHas("destadzone")
             }
         })
     };
 
     /**
-     * 获取资源位统计报表
-     * @version 2.9.7
+     * 获取资源位统计报表,新增缓存机制
+     * @version 3.1.2
      *
      */
-    CPS.app.rptnAdzoneDayList = function(beginDateStr,endDateStr,offset,fn){
-        var t = parseInt(Math.random()*1000+offset/200*100);
+    CPS.app.rptnAdzoneDayList = function(b,e,offset,fn){
+        var k = "adzone."+b+"."+e+"."+offset;
+        if(offset>0 && CPS.mutex.is(k)){
+            return false;
+        }else if(offset<=0 && CPS.mutex.is(k)){
+            var d = CPS.storage.get(k+".data");
+            fn(d,offset);
+            return true;
+        }
+
+        var t = parseInt(Math.random()*1000+offset*10);
         var r = function() {
 
             return $.ajax({
@@ -807,8 +749,8 @@
                 dataType: 'json',
                 data: {
                     csrfID: CPS.app.csrfID,
-                    startTime: beginDateStr,
-                    endTime: endDateStr,
+                    startTime: b,
+                    endTime: e,
                     pageSize: 200,
                     offset: offset,
                     campaignModel: 1,
@@ -820,8 +762,12 @@
                 },
                 type: 'get',
                 success: function (resp) {
-                    if (resp && resp.data) {
+                    if (resp && resp.info && resp.info.ok) {
+                        CPS.mutex.lock(k);
                         fn(resp.data, offset);
+                        if(offset<=0){
+                            CPS.storage.set(k+".data",resp.data);
+                        }
                     }
 
                 }
@@ -831,17 +777,17 @@
     };
 
     CPS.app.rptnAdzoneAll = function(){
-        var dateFormat = new DateFormat();
-        var endDateStr = dateFormat.addDays(new Date(), -1, "yyyy-MM-dd");
-        var beginDateStr = dateFormat.addDays(new Date(), -7, "yyyy-MM-dd");
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -7, "yyyy-MM-dd");
 
-        CPS.app.rptnAdzoneDayList(beginDateStr,endDateStr,0,function(data){
+        CPS.app.rptnAdzoneDayList(b,e,0,function(data){
 
             CPS.app.postRptnAdzone(data,0);
 
             for(var offset = 200;offset < data.count;offset+=200){
 
-                CPS.app.rptnAdzoneDayList(beginDateStr,endDateStr,offset,function(rpt,i){
+                CPS.app.rptnAdzoneDayList(b,e,offset,function(rpt,i){
                     CPS.app.postRptnAdzone(rpt,i);
                 });
 
@@ -855,17 +801,17 @@
      *
      */
     CPS.app.rptnAdzoneAll2 = function(){
-        var dateFormat = new DateFormat();
-        var endDateStr = dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
-        var beginDateStr = dateFormat.addDays(new Date(), -16, "yyyy-MM-dd");
-        CPS.app.rptnAdzoneDayList(beginDateStr,endDateStr,0,function(data){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -16, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
+        CPS.app.rptnAdzoneDayList(b,e,0,function(data){
 
-            CPS.app.postRptnAdzone2(data,beginDateStr,0);
+            CPS.app.postRptnAdzone2(data,b,0);
 
             for(var offset = 200;offset < data.count;offset+=200){
 
-                CPS.app.rptnAdzoneDayList(beginDateStr,endDateStr,offset,function(rpt,i){
-                    CPS.app.postRptnAdzone2(rpt,beginDateStr,i);
+                CPS.app.rptnAdzoneDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnAdzone2(rpt,b,i);
                 });
 
             }
@@ -887,7 +833,6 @@
             },
             dataType:"json",
             success:function(){
-                CPS.rpt.setHas("adzone1")
             }
         })
     };
@@ -906,7 +851,6 @@
             },
             dataType:"json",
             success:function(){
-                CPS.rpt.setHas("adzone2")
             }
         })
     };
@@ -1125,63 +1069,6 @@
         }, 1000);
     };
 
-    /**
-     * 修改推广单元
-     * @param trans
-     * @param adzones
-     * @param fn
-     * @param err
-     */
-    //CPS.app.modifyTrans = function(trans,adzones,fn,err){
-    //    var newTrans = {};
-    //    newTrans.campaignId = trans.campaignId;
-    //    newTrans.transId = trans.transId;
-    //    newTrans.transName = trans.transName;
-    //    newTrans.shopGroupTargets =trans.shopGroupTargets;
-    //    var matrixPrices = {};
-    //    for(var i in  trans.shopGroupTargets[0].matrixPrices){
-    //        var a =  trans.shopGroupTargets[0].matrixPrices[i];
-    //        matrixPrices[a.adzoneId] = a.bidPrice;
-    //    }
-    //
-    //    for(var j in adzones){
-    //        var b = adzones[j];
-    //        matrixPrices[b.adzoneId] = b.bidPrice;
-    //    }
-    //
-    //    newTrans.shopGroupTargets[0].matrixPrices = [];
-    //    for(var c in matrixPrices){
-    //        newTrans.shopGroupTargets[0].matrixPrices.push({"adzoneId":c,"bidPrice":matrixPrices[c]});
-    //    }
-    //
-    //    var transAdzoneBinds = {};
-    //    for(var e in  trans.transAdzoneBinds){
-    //        var g = trans.transAdzoneBinds[e];
-    //        transAdzoneBinds[g.adzoneId] = g.type;
-    //    }
-    //
-    //    for(var f in adzones){
-    //        var k = adzones[f];
-    //        transAdzoneBinds[k.adzoneId] = k.type;
-    //    }
-    //
-    //    newTrans.transAdzoneBinds = [];
-    //
-    //    for(var d in transAdzoneBinds){
-    //        newTrans.transAdzoneBinds.push({"adzoneId":d,"type":transAdzoneBinds[d]});
-    //    }
-    //
-    //    $.ajax({
-    //        url: 'http://zuanshi.taobao.com/trans/modifyTrans.json',
-    //        dataType: 'json',
-    //        data: {csrfID: CPS.app.csrfID,trans:JSON.stringify(newTrans)},
-    //        type: 'post',
-    //        success: function (data) {
-    //            CPS.app.adzoneCount++;
-    //
-    //        }
-    //    });
-    //};
 
     /**
      * 批量增加资源位
@@ -1410,22 +1297,6 @@
             });
     };
 
-    /**
-     * 获取该计划下的定向列表
-     * @param campaignId
-     * @param page
-     * @returns {*|{requires}}
-     */
-    //CPS.app.getTargetList = function(campaignId,page){
-    //
-    //        var offset = (page-1)*40;
-    //        return $.ajax({
-    //            url: 'http://zuanshi.taobao.com/targetManage/getTargetList.json',
-    //            dataType: 'json',
-    //            data: {csrfID: CPS.app.csrfID, campaignId: campaignId,campaignModel:1,tab:"unit_detail_target_list",page:page,offset:offset,pageSize:40},
-    //            type: 'post'
-    //        });
-    //};
 
     /**
      * 获取该计划下的定向列表
@@ -1445,43 +1316,6 @@
         });
     };
 
-    /**
-     *
-     * @param campaignId
-     * @param page
-     * @param fn
-     * @param err
-     */
-    //CPS.app.getCreativeList = function(campaignId,page,fn,err){
-    //    setTimeout(function () {
-    //        var offset = (page-1)*40;
-    //        $.ajax({
-    //            url: 'http://zuanshi.taobao.com/targetManage/getTargetList.json',
-    //            dataType: 'json',
-    //            data: {csrfID: CPS.app.csrfID, campaignId: campaignId,campaignModel:1,tab:"unit_detail_creative_list",page:page,offset:offset,pageSize:40},
-    //            type: 'post',
-    //            success: function (data) {
-    //                if(data.data.list) {
-    //                    fn(data.data.list,data.data.count);
-    //                }
-    //            },
-    //            error:function(){
-    //                err();
-    //            }
-    //        });
-    //
-    //    }, 1000);
-    //};
-
-    //CPS.app.getTransList = function(campaignId,page){
-    //    var offset = (page-1)*40;
-    //    return $.ajax({
-    //        url: 'http://zuanshi.taobao.com/trans/findTransList.json',
-    //        dataType: 'json',
-    //        data: {csrfID: CPS.app.csrfID, campaignId: campaignId,tab:"detail",campaignModel:1,status:25,page:page,offset:offset,pageSize:40},
-    //        type: 'post'
-    //    });
-    //};
 
     /**
      * 获取推广组列表
@@ -1531,24 +1365,6 @@
             }
         });
     };
-    //
-    //CPS.app.getTranDetail = function(transId,fn,err){
-    //    $.ajax({
-    //        url: ' http://zuanshi.taobao.com/trans/getTrans.json',
-    //        dataType: 'json',
-    //        data: {csrfID: CPS.app.csrfID, transId: transId,needTarget:true},
-    //        type: 'post',
-    //        success: function (data) {
-    //            if(data.data.trans) {
-    //                fn(data.data.trans);
-    //            }
-    //        },
-    //        error:function(){
-    //            err();
-    //        }
-    //    });
-    //
-    //};
 
     /**
      * 批量替换创意
@@ -1690,13 +1506,9 @@
     };
 
     CPS.adzone.get = function(){
-        var f = new DateFormat();
-        var a = window.localStorage.getItem("adzone.list.expired");
-        if(a && (f.parseDate(a,"yyyy-MM-dd")).getTime()>0 && (new Date()).getTime()<=(f.parseDate(a,"yyyy-MM-dd")).getTime()){
-            var d = window.localStorage.getItem("adzone.list");
-            if(d){
-                return JSON.parse(d);
-            }
+        var d = CPS.storage.get("adzone.list.data");
+        if(d){
+            return d;
         }
 
         $.ajax({
@@ -1705,9 +1517,8 @@
             async:false,
             type: 'get',
             success: function (resp) {
-                window.localStorage.setItem("adzone.list",JSON.stringify(resp.data));
-                var e = f.addDays(new Date(),7,"yyyy-MM-dd");
-                window.localStorage.setItem("adzone.list.expired",e);
+
+                CPS.storage.set("adzone.list.data",resp.data);
                 return resp.data;
             }
         });

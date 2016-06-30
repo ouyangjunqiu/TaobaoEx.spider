@@ -1,10 +1,10 @@
 {
     "manifest_version": 2,
-    "version": "3.1.1",
+    "version": "3.1.2",
     "name": "精准投放平台操作助手",
     "description": "直通车、钻石展位浏览器快捷操作助手",
     "background": {
-        "scripts": ["jquery-2.0.0.min.js", "background.js"]
+        "scripts": ["lib/jquery-2.0.0.min.js", "background.js"]
     },
     "browser_action": {
         "default_icon": "icon.png",
@@ -42,12 +42,12 @@
     "content_scripts": [
         {
             "matches": ["http://cps.da-mai.com/*" ,"http://beta.cps.da-mai.com/*"],
-            "js": ["jquery-2.0.0.min.js","cps_script.js"],
+            "js": ["lib/jquery-2.0.0.min.js","cps_script.js"],
             "all_frames": true
         },
         {
             "matches": ["http://yj.da-mai.com/*"],
-            "js": ["jquery-2.0.0.min.js","yj_script.js"],
+            "js": ["lib/jquery-2.0.0.min.js","yj_script.js"],
             "all_frames": true
         },
         {
@@ -58,7 +58,7 @@
         },
         {
             "matches": ["http://subway.simba.taobao.com/*"],
-            "js": ["jquery-2.0.0.min.js","subway_login.js"],
+            "js": ["lib/jquery-2.0.0.min.js","subway_login.js"],
             "run_at": "document_end",
             "all_frames": true
         },{
@@ -68,58 +68,58 @@
             "all_frames":true
         },{
             "matches":["http://zuanshi.taobao.com/*"],
-            "js":["jquery-2.0.0.min.js","date.js","zuanshi.js","select2/select2.min.js"],
-            "css":["select2/select2.min.css","zuanshi/base.css"],
+            "js":["lib/jquery-2.0.0.min.js","lib/date.js","lib/web-storage-cache.min.js","lib/select2/select2.min.js","zuanshi.js"],
+            "css":["lib/select2/select2.min.css","zuanshi/base.css"],
             "run_at":"document_end",
             "all_frames":true
         },{
             "matches":["http://dmp.taobao.com/index.html*"],
-            "js":["jquery-2.0.0.min.js","date.js","dmp.js"],
+            "js":["lib/jquery-2.0.0.min.js","lib/date.js","dmp.js"],
             "run_at":"document_end",
             "all_frames":true
         },{
             "matches":["https://s.taobao.com/*"],
-            "js":["jquery-2.0.0.min.js","taobao_search.js"],
+            "js":["lib/jquery-2.0.0.min.js","taobao_search.js"],
             "css":["taobaosearch/base.css"],
             "run_at":"document_end",
             "all_frames":true
         },{
             "matches":["https://travel.alitrip.com/*"],
-            "js":["jquery-2.0.0.min.js","alitrip.js"],
+            "js":["lib/jquery-2.0.0.min.js","alitrip.js"],
             "run_at":"document_end",
             "all_frames":true
         },{
             "matches":["https://shopsearch.taobao.com/*"],
-            "js":["jquery-2.0.0.min.js","taobao_shopsearch.js"],
+            "js":["lib/jquery-2.0.0.min.js","taobao_shopsearch.js"],
             "run_at":"document_end",
             "all_frames":true
         },
         {
             "matches":["https://beta.sycm.taobao.com/*","https://sycm.taobao.com/*"],
-            "js":["jquery-2.0.0.min.js","sycm.js"],
+            "js":["lib/jquery-2.0.0.min.js","sycm.js"],
             "run_at":"document_end",
             "all_frames":true
         },
         {
             "matches":["http://sem.taobao.com/*"],
-            "js":["jquery-2.0.0.min.js","sem_taobao_do.js"],
+            "js":["lib/jquery-2.0.0.min.js","sem_taobao_do.js"],
             "run_at":"document_end",
             "all_frames":true
         },
         {
             "matches":["http://sem.taobao.com/index.do"],
-            "js":["jquery-2.0.0.min.js","sem_taobao_do.js"],
+            "js":["lib/jquery-2.0.0.min.js","sem_taobao_do.js"],
             "run_at":"document_end",
             "all_frames":true
         },
         {
             "matches":["http://sem.taobao.com/index.do#!/customers/exists/list/*"],
-            "js":["jquery-2.0.0.min.js","sem_taobao_do.js"],
+            "js":["lib/jquery-2.0.0.min.js","sem_taobao_do.js"],
             "run_at":"document_end",
             "all_frames":true
         },{
             "matches":["http://trunks.da-mai.com/*","http://trunks2.da-mai.com/*","http://oa.da-mai.com/*","http://oa2.da-mai.com/*"],
-            "js":["jquery-2.0.0.min.js", "oa_script.js"],
+            "js":["lib/jquery-2.0.0.min.js", "oa_script.js"],
             "all_frames":true
         }
     ],
