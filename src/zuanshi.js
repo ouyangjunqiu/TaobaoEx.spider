@@ -61,6 +61,8 @@
 
 
     CPS.app.start = function () {
+        var w = new WebStorageCache();
+        w.deleteAllExpires();
         CPS.app.init();
     };
 
@@ -208,22 +210,19 @@
     CPS.app.run = function () {
 
         CPS.app.accountRpt();
-
         CPS.app.accountRpt2();
 
-        CPS.app.rptnAdboardAll();
-
-        CPS.app.rptnAdboardAll2();
-
-        CPS.app.rptnDestAll();
-
-        CPS.app.rptnDestAll2();
-
-        CPS.app.rptnAdzoneAll();
-
-        CPS.app.rptnAdzoneAll2();
-
-        CPS.app.rptnDestAdzoneAll2();
+        setTimeout(function(){
+            CPS.app.rptnAdboardAll2();
+            CPS.app.rptnDestAll2();
+            CPS.app.rptnAdzoneAll2();
+            CPS.app.rptnDestAdzoneAll2();
+            setTimeout(function(){
+                CPS.app.rptnAdboardAll();
+                CPS.app.rptnDestAll();
+                CPS.app.rptnAdzoneAll();
+            },4000);
+        },1000);
 
     };
 
@@ -372,10 +371,11 @@
      */
     CPS.app.rptnAdboardDayList = function(b,e,offset,fn){
         var k = "adboard."+b+"."+e+"."+offset;
+        var _k = CPS.app.shopId+"."+k+".data";
         if(offset>0 && CPS.mutex.is(k)){
             return false;
         }else if(offset<=0 && CPS.mutex.is(k)){
-            var d = CPS.storage.get(k+".data");
+            var d = CPS.storage.get(_k);
             fn(d,offset);
             return true;
         }
@@ -404,7 +404,7 @@
                         CPS.mutex.lock(k);
                         fn(resp.data, offset);
                         if(offset<=0){
-                            CPS.storage.set(k+".data",resp.data);
+                            CPS.storage.set(_k,resp.data);
                         }
                     }
 
@@ -507,10 +507,11 @@
      */
     CPS.app.rptnDestDayList = function(b,e,offset,fn){
         var k = "dest."+b+"."+e+"."+offset;
+        var _k = CPS.app.shopId+"."+k+".data";
         if(offset>0 && CPS.mutex.is(k)){
             return false;
         }else if(offset<=0 && CPS.mutex.is(k)){
-            var d = CPS.storage.get(k+".data");
+            var d = CPS.storage.get(_k);
             fn(d,offset);
             return true;
         }
@@ -539,7 +540,7 @@
                         CPS.mutex.lock(k);
                         fn(resp.data, offset);
                         if(offset<=0){
-                            CPS.storage.set(k+".data",resp.data);
+                            CPS.storage.set(_k,resp.data);
                         }
                     }
                 }
@@ -642,10 +643,11 @@
      */
     CPS.app.rptnDestAdzoneDayList = function(b,e,offset,fn){
         var k = "destadzone."+b+"."+e+"."+offset;
+        var _k = CPS.app.shopId+"."+k+".data";
         if(offset>0 && CPS.mutex.is(k)){
             return false;
         }else if(offset<=0 && CPS.mutex.is(k)){
-            var d = CPS.storage.get(k+".data");
+            var d = CPS.storage.get(_k);
             fn(d,offset);
             return true;
         }
@@ -674,7 +676,7 @@
                         CPS.mutex.lock(k);
                         fn(resp.data, offset);
                         if(offset<=0){
-                            CPS.storage.set(k+".data",resp.data);
+                            CPS.storage.set(_k,resp.data);
                         }
                     }
 
@@ -733,10 +735,11 @@
      */
     CPS.app.rptnAdzoneDayList = function(b,e,offset,fn){
         var k = "adzone."+b+"."+e+"."+offset;
+        var _k = CPS.app.shopId+"."+k+".data";
         if(offset>0 && CPS.mutex.is(k)){
             return false;
         }else if(offset<=0 && CPS.mutex.is(k)){
-            var d = CPS.storage.get(k+".data");
+            var d = CPS.storage.get(_k);
             fn(d,offset);
             return true;
         }
@@ -766,7 +769,7 @@
                         CPS.mutex.lock(k);
                         fn(resp.data, offset);
                         if(offset<=0){
-                            CPS.storage.set(k+".data",resp.data);
+                            CPS.storage.set(_k,resp.data);
                         }
                     }
 
