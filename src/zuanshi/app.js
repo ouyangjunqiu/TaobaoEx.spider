@@ -223,6 +223,19 @@
                 CPS.app.rptnAdzoneAll();
             },4000);
         },1000);
+        setTimeout(function(){
+            CPS.app.rptnAdboardAll3();
+            CPS.app.rptnDestAll3();
+            CPS.app.rptnAdzoneAll3();
+            CPS.app.rptnDestAdzoneAll3();
+            setTimeout(function(){
+                CPS.app.rptnAdboardAll4();
+                CPS.app.rptnDestAll4();
+                CPS.app.rptnAdzoneAll4();
+                CPS.app.rptnDestAdzoneAll4();
+            },4000);
+
+        },8000);
 
     };
 
@@ -482,6 +495,58 @@
 
         });
     };
+
+    /**
+     * 获取所有的创意统计报表
+     * @version 3.0.5
+     *
+     */
+    CPS.app.rptnAdboardAll3 = function(){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -15, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -15, "yyyy-MM-dd");
+
+        CPS.app.rptnAdboardDayList(b,e,0,function(data){
+
+            CPS.app.postRptnAboard2(data,e,0);
+
+            for(var offset = 100;offset < data.count;offset+=100){
+
+                CPS.app.rptnAdboardDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnAboard2(rpt,b,i);
+
+                });
+
+            }
+
+        });
+    };
+
+    /**
+     * 获取所有的创意统计报表
+     * @version 3.0.5
+     *
+     */
+    CPS.app.rptnAdboardAll4 = function(){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -17, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -17, "yyyy-MM-dd");
+
+        CPS.app.rptnAdboardDayList(b,e,0,function(data){
+
+            CPS.app.postRptnAboard2(data,e,0);
+
+            for(var offset = 100;offset < data.count;offset+=100){
+
+                CPS.app.rptnAdboardDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnAboard2(rpt,b,i);
+
+                });
+
+            }
+
+        });
+    };
     /**
      * 提交创意统计报表
      * @version 3.0.5
@@ -619,6 +684,54 @@
     };
 
     /**
+     * 获取所有的定向统计报表
+     * @version 3.0.5
+     *
+     */
+    CPS.app.rptnDestAll3 = function(){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -15, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -15, "yyyy-MM-dd");
+        CPS.app.rptnDestDayList(b,e,0,function(data){
+
+            CPS.app.postRptnDest2(data,b,0);
+
+            for(var offset = 200;offset < data.count;offset+=200){
+
+                CPS.app.rptnDestDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnDest2(rpt,b,i);
+                });
+
+            }
+
+        });
+    };
+
+    /**
+     * 获取所有的定向统计报表
+     * @version 3.0.5
+     *
+     */
+    CPS.app.rptnDestAll4 = function(){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -17, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -17, "yyyy-MM-dd");
+        CPS.app.rptnDestDayList(b,e,0,function(data){
+
+            CPS.app.postRptnDest2(data,b,0);
+
+            for(var offset = 200;offset < data.count;offset+=200){
+
+                CPS.app.rptnDestDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnDest2(rpt,b,i);
+                });
+
+            }
+
+        });
+    };
+
+    /**
      * 提交定向统计报表
      * @version 3.0.5
      *
@@ -695,6 +808,54 @@
         var f = new DateFormat();
         var e = f.addDays(new Date(), -16, "yyyy-MM-dd");
         var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
+        CPS.app.rptnDestAdzoneDayList(b,e,0,function(data){
+
+            CPS.app.postRptnDestAdzone2(data,b,0);
+
+            for(var offset = 200;offset < data.count;offset+=200){
+
+                CPS.app.rptnDestAdzoneDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnDestAdzone2(rpt,b,i);
+                });
+
+            }
+
+        });
+    };
+
+    /**
+     * 获取所有的定向统计报表
+     * @version 3.0.5
+     *
+     */
+    CPS.app.rptnDestAdzoneAll3 = function(){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -15, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -15, "yyyy-MM-dd");
+        CPS.app.rptnDestAdzoneDayList(b,e,0,function(data){
+
+            CPS.app.postRptnDestAdzone2(data,b,0);
+
+            for(var offset = 200;offset < data.count;offset+=200){
+
+                CPS.app.rptnDestAdzoneDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnDestAdzone2(rpt,b,i);
+                });
+
+            }
+
+        });
+    };
+
+    /**
+     * 获取所有的定向统计报表
+     * @version 3.0.5
+     *
+     */
+    CPS.app.rptnDestAdzoneAll4 = function(){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -17, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -17, "yyyy-MM-dd");
         CPS.app.rptnDestAdzoneDayList(b,e,0,function(data){
 
             CPS.app.postRptnDestAdzone2(data,b,0);
@@ -807,6 +968,54 @@
         var f = new DateFormat();
         var e = f.addDays(new Date(), -16, "yyyy-MM-dd");
         var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
+        CPS.app.rptnAdzoneDayList(b,e,0,function(data){
+
+            CPS.app.postRptnAdzone2(data,b,0);
+
+            for(var offset = 200;offset < data.count;offset+=200){
+
+                CPS.app.rptnAdzoneDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnAdzone2(rpt,b,i);
+                });
+
+            }
+
+        });
+    };
+
+    /**
+     * 获取所有的定向统计报表
+     * @version 3.0.5
+     *
+     */
+    CPS.app.rptnAdzoneAll3 = function(){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -15, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -15, "yyyy-MM-dd");
+        CPS.app.rptnAdzoneDayList(b,e,0,function(data){
+
+            CPS.app.postRptnAdzone2(data,b,0);
+
+            for(var offset = 200;offset < data.count;offset+=200){
+
+                CPS.app.rptnAdzoneDayList(b,e,offset,function(rpt,i){
+                    CPS.app.postRptnAdzone2(rpt,b,i);
+                });
+
+            }
+
+        });
+    };
+
+    /**
+     * 获取所有的定向统计报表
+     * @version 3.0.5
+     *
+     */
+    CPS.app.rptnAdzoneAll4 = function(){
+        var f = new DateFormat();
+        var e = f.addDays(new Date(), -17, "yyyy-MM-dd");
+        var b = f.addDays(new Date(), -17, "yyyy-MM-dd");
         CPS.app.rptnAdzoneDayList(b,e,0,function(data){
 
             CPS.app.postRptnAdzone2(data,b,0);
@@ -1170,6 +1379,36 @@
     };
 
     /**
+     *
+     * @param a
+     * @param fn
+     * @param err
+     */
+    CPS.app.getTransXTargetXAdzoneByAdzone = function(a,fn,err){
+        $.ajax({
+            url: 'http://zuanshi.taobao.com/matrixprice/getTransXTargetXAdzoneByCrowd.json',
+            dataType: 'json',
+            data: {
+                csrfID: CPS.app.csrfID,
+                transId: a.transId,
+                adzoneId: a.adzoneId,
+                campaignType: a.campaignType
+            },
+            type: 'post',
+            success: function (resp) {
+                if(resp.info && resp.info.ok) {
+                    fn(resp.data);
+                }else{
+                    err();
+                }
+            },
+            error:function(){
+                err();
+            }
+        });
+    };
+
+    /**
      * 移除资源位
      * @param adgroupBindAdzoneVOList
      * @param fn
@@ -1301,6 +1540,25 @@
     };
 
 
+
+    /**
+     * 获取推广组列表
+     * @param campaignId
+     * @param page
+     * @returns {*|{requires}}
+     * @version 2.9.1
+     */
+    CPS.app.findAdgroupList = function(campaignId,page){
+        var offset = (page-1)*40;
+        return $.ajax({
+            url: 'http://zuanshi.taobao.com/adgroup/findAdgroupList.json',
+            dataType: 'json',
+            data: {csrfID: CPS.app.csrfID, campaignId: campaignId,tab:"detail",campaignModel:1,status:25,page:page,offset:offset,pageSize:40},
+            type: 'post'
+        });
+    };
+
+
     /**
      * 获取该计划下的定向列表
      * @param campaignId
@@ -1319,23 +1577,48 @@
         });
     };
 
-
     /**
-     * 获取推广组列表
+     * 获取该计划下的资源位列表
      * @param campaignId
      * @param page
+     * @param fn
+     * @param err
      * @returns {*|{requires}}
      * @version 2.9.1
      */
-    CPS.app.findAdgroupList = function(campaignId,page){
+    CPS.app.findAdzoneList = function(campaignId,page,fn,err){
+
         var offset = (page-1)*40;
-        return $.ajax({
-            url: 'http://zuanshi.taobao.com/adgroup/findAdgroupList.json',
-            dataType: 'json',
-            data: {csrfID: CPS.app.csrfID, campaignId: campaignId,tab:"detail",campaignModel:1,status:25,page:page,offset:offset,pageSize:40},
-            type: 'post'
-        });
+        var t = parseInt(Math.random()*1000+offset*10);
+        setTimeout(function(){
+            $.ajax({
+                url: 'http://zuanshi.taobao.com/horizontalManage/findAdzoneList.json',
+                dataType: 'json',
+                data: {
+                    csrfID: CPS.app.csrfID,
+                    campaignId: campaignId,
+                    campaignModel:1,
+                    tab:"unit_detail_resource_list",
+                    index:page,
+                    offset:offset,
+                    pageSize:40
+                },
+                type: 'post',
+                success:function(resp){
+                    if(resp.info && resp.info.ok && resp.data.list) {
+                        fn(resp.data,page);
+                    }else{
+                        err();
+                    }
+                },
+                error:function(){
+                    err();
+                }
+            });
+        },t);
+
     };
+
 
     /**
      * 获取推广组的创意列表
@@ -1367,6 +1650,64 @@
                 err();
             }
         });
+    };
+
+    /**
+     * 按比率调整出价
+     * @param campaignId
+     * @param rate
+     * @param page
+     * @version 3.1.4
+     */
+    CPS.app.modifyPriceByRate = function(campaignId,rate,page){
+        var fn = function(d1, p){
+            for(var i in d1.list){
+                var a = d1.list[i];
+                CPS.app.getTransXTargetXAdzoneByAdzone(a,function(d2){
+                    for(var j in d2.list){
+                        var b = d2.list[j];
+                        var np = parseFloat((rate + 1)*b.bidPrice);
+
+                        CPS.app.batchModifyMatrixPrice([{"campaignId": b.campaignId,"transId": b.transId,"targetId": b.targetId,"targetType": b.targetType,"bidPrice":np.toFixed(2),"adzoneId": b.adzoneId}]);
+                    }
+
+                },function(){CPS.time.fail()});
+            }
+        };
+        var err = function(){
+            CPS.app.findAdzoneList(campaignId,page,fn,err);
+        };
+
+        CPS.app.findAdzoneList(campaignId,page,fn,err);
+    };
+
+    /**
+     * 按固定值调整出价
+     * @param campaignId
+     * @param val
+     * @param page
+     * @version 3.1.4
+     */
+    CPS.app.modifyPriceByValue = function(campaignId,val,page){
+        var fn = function(d1, p){
+            for(var i in d1.list){
+                var a = d1.list[i];
+                CPS.app.getTransXTargetXAdzoneByAdzone(a,function(d2){
+                    for(var j in d2.list){
+                        var b = d2.list[j];
+                        var np = parseFloat(val);
+
+                        CPS.app.batchModifyMatrixPrice([{"campaignId": b.campaignId,"transId": b.transId,"targetId": b.targetId,"targetType": b.targetType,"bidPrice":np.toFixed(2),"adzoneId": b.adzoneId}]);
+                    }
+
+                },function(){CPS.time.fail()});
+            }
+        };
+        var err = function(){
+            CPS.app.findAdzoneList(campaignId,page,fn,err);
+        };
+
+        CPS.app.findAdzoneList(campaignId,page,fn,err);
     };
 
     /**
@@ -1747,21 +2088,18 @@
     };
 
     CPS.layout.adjust = function(){
+        $("#CPS_tools_container").hide();
 
         var panel = "<div id='auto_adjust_div' class='row'>"+
         "<table class='table'><tr><td>计划编号：</td><td><input type='text' name='campaignid' value=''/></td><td></td></tr>"+
-        "<tr><td>资源位：</td><td colspan='2'><p class='adzone_input'>" +
-        "<select name='adzoneId'><option value='34502344,2'>PC_流量包_网上购物_淘宝首页焦点图(34502344)</option></select>"+
-        "</p></td></tr>"+
         "<tr><td>出价：</td><td><input type='text' name='bidPrice' value='10'/></td><td></td></tr>"+
-        "<tr><td><a class='CPS_bt' id='CPS_auto_adjust'>批量调价</a></td><td></td><td></td></tr>" +
+        "<tr><td><a class='CPS_bt' id='CPS_auto_adjust'>开始调整</a></td><td></td><td></td></tr>" +
         "</table></div>";
 
         $("#CPS_exector_msg").html("");
 
         $("#CPS_tools_container .content .panel").html(panel);
-        $("#CPS_tools_container").hide();
-        CPS.app.adzoneSelectHtml();
+
 
         $("#CPS_auto_adjust").unbind();
         $("#CPS_auto_adjust").one("click",function(){
@@ -1770,33 +2108,104 @@
 
             var campaignid = $("#auto_adjust_div").find("input[name=campaignid]").val();
             var bidPrice =  $("#auto_adjust_div").find("input[name=bidPrice]").val();
-            var ad = $("#auto_adjust_div").find("select[name=adzoneId]").val();
-            var adzoneId = ad.split(",")[0];
+            if(isNaN(parseInt(bidPrice)) || bidPrice<=0){
+                self.html("请填写正确的出价");
+                return;
+            }
 
-            $.when(CPS.app.findCrowdList(campaignid,1),CPS.app.findCrowdList(campaignid,2),CPS.app.findCrowdList(campaignid,3)).then(function(a,b,c){
-                var targets = [];
-                if(a[0].data && a[0].data.list){
-                    targets = targets.concat(a[0].data.list);
-                }
-                if(b[0].data && b[0].data.list){
-                    targets = targets.concat(b[0].data.list);
-                }
-                if(c[0].data && c[0].data.list){
-                    targets = targets.concat(c[0].data.list);
+            CPS.app.findAdzoneList(campaignid,1,function(data){
+                var c = data.count;
+                CPS.time.start(c);
+                var pt = parseInt((c+39)/40);
+                for(var p =1;p<=pt;p++){
+                    CPS.app.modifyPriceByValue(campaignid,bidPrice,p);
                 }
 
-                CPS.time.start(targets.length);
-
-                var list = targets;
-
-                for(var j in list){
-                    var matrixPrice = [{"campaignId":list[j].campaignId,"transId":list[j].transId,"targetId":list[j].targetId,"targetType":list[j].targetType,"bidPrice":bidPrice,"adzoneId":adzoneId}];
-                    CPS.app.batchModifyMatrixPrice(matrixPrice);
-                }
-            });
+            },function(){self.html("网络错误,请刷新页面重试!");})
 
 
         });
+        $("#CPS_tools_container").show();
+
+    };
+
+    CPS.layout.adjust_i = function(){
+        $("#CPS_tools_container").hide();
+
+        var panel = "<div id='auto_adjust_i_div' class='row'>"+
+            "<table class='table'><tr><td>计划编号：</td><td><input type='text' name='campaignid' value=''/></td><td></td></tr>"+
+            "<tr><td>加大比率(%)：</td><td><input type='text' name='rate' value='10'/></td><td></td></tr>"+
+            "<tr><td><a class='CPS_bt' id='CPS_auto_adjust_i'>开始调整</a></td><td></td><td></td></tr>" +
+            "</table></div>";
+
+        $("#CPS_exector_msg").html("");
+
+        $("#CPS_tools_container .content .panel").html(panel);
+
+        //CPS.app.adzoneSelectHtml();
+
+        $("#CPS_auto_adjust_i").unbind();
+        $("#CPS_auto_adjust_i").one("click",function(){
+            var self = $(this);
+            self.html("正在处理,请稍候..");
+
+            var campaignid = $("#auto_adjust_i_div").find("input[name=campaignid]").val();
+            var rate =  parseInt($("#auto_adjust_i_div").find("input[name=rate]").val())/100;
+
+            CPS.app.findAdzoneList(campaignid,1,function(data){
+                var c = data.count;
+                CPS.time.start(c);
+                var pt = parseInt((c+39)/40);
+                for(var p =1;p<=pt;p++){
+                    CPS.app.modifyPriceByRate(campaignid,rate,p);
+                }
+
+            },function(){self.html("网络错误,请刷新页面重试!");})
+
+
+        });
+
+        $("#CPS_tools_container").show();
+
+    };
+
+    CPS.layout.adjust_d = function(){
+        $("#CPS_tools_container").hide();
+
+        var panel = "<div id='auto_adjust_d_div' class='row'>"+
+            "<table class='table'><tr><td>计划编号：</td><td><input type='text' name='campaignid' value=''/></td><td></td></tr>"+
+            "<tr><td>减少比率(%)：</td><td><input type='text' name='rate' value='10'/> </td><td></td></tr>"+
+            "<tr><td><a class='CPS_bt' id='CPS_auto_adjust_d'>开始调整</a></td><td></td><td></td></tr>" +
+            "</table></div>";
+
+        $("#CPS_exector_msg").html("");
+
+        $("#CPS_tools_container .content .panel").html(panel);
+
+        //CPS.app.adzoneSelectHtml();
+
+        $("#CPS_auto_adjust_d").unbind();
+        $("#CPS_auto_adjust_d").one("click",function(){
+            var self = $(this);
+            self.html("正在处理,请稍候..");
+
+            var campaignid = $("#auto_adjust_d_div").find("input[name=campaignid]").val();
+            var rate =  parseInt($("#auto_adjust_d_div").find("input[name=rate]").val())/100;
+            rate = 0-Math.abs(rate);
+            CPS.app.findAdzoneList(campaignid,1,function(data){
+                var c = data.count;
+                CPS.time.start(c);
+                var pt = parseInt((c+39)/40);
+                for(var p =1;p<=pt;p++){
+                    CPS.app.modifyPriceByRate(campaignid,rate,p);
+                }
+
+            },function(){self.html("网络错误,请刷新页面重试!");})
+
+
+        });
+
+        $("#CPS_tools_container").show();
 
     };
 
@@ -2033,8 +2442,10 @@
     CPS.layout.menu = function(){
         var menuHtml = "<div id='CPS_layout_menu'><ul style='display: none'>"+
             "<li><a href='javascript:void(0)' data-target='CPS_layout_create'>批量推广...</a></li>"+
-            "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust'>批量调价...</a></li>"+
-            "<li><a href='javascript:void(0)' data-target='CPS_layout_adboard'>批量替换创意...</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust'>统一出价...</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust_i'>加大投放...</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust_d'>减少投放...</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_adboard'>替换创意...</a></li>"+
             "</ul><div id='CPS_layout_icon'><div class='img_box'><i class='icon'></i></div></div></div>";
         $("body").append(menuHtml);
         $("#CPS_layout_icon").click(function(){
@@ -2047,6 +2458,14 @@
 
         $("#CPS_layout_menu a[data-target='CPS_layout_adjust']").click(function(){
             CPS.layout.adjust();
+        });
+
+        $("#CPS_layout_menu a[data-target='CPS_layout_adjust_i']").click(function(){
+            CPS.layout.adjust_i();
+        });
+
+        $("#CPS_layout_menu a[data-target='CPS_layout_adjust_d']").click(function(){
+            CPS.layout.adjust_d();
         });
 
         //$("#CPS_layout_menu a[data-target='CPS_layout_add_ad']").click(function(){
