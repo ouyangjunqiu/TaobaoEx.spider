@@ -171,6 +171,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         CPS.saveTab(tab.id);
                     });
                     break;
+                case 'branding':
+                    chrome.tabs.create({
+                        url:"https://login.taobao.com/member/login.jhtml?sub=true&from=subway&enup=false&full_redirect=false&tpl_redirect_url=http://branding.taobao.com/#!/home",
+                        active:true
+                    },function(tab){
+                        CPS.tabId = tab.id;
+                        CPS.saveTab(tab.id);
+                    });
+                    break;
                 default :
                     chrome.tabs.create({
                         url:"https://login.taobao.com/member/login.jhtml",
@@ -274,7 +283,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 type:"post",
                 dataType:"json",
                 async:false,
-                data:{nick:request.nick,payAmt:JSON.stringify(request.payAmt)}
+                data:request
             });
             sendResponse("OK");
             break;
@@ -296,7 +305,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 url:"http://cps.da-mai.com/main/shop/cloudupdate.html",
                 type:"post",
                 dataType:"json",
-                data:{shopname:request.shopname,usernumid:request.usernumid,shopcatname:request.shopcatname}
+                data:request
             });
             break;
         case 'trade':

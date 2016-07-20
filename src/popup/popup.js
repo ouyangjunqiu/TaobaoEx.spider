@@ -17,6 +17,9 @@ var loginTypeText = function(type){
         case 'dmp':
             return "达摩盘";
             break;
+        case 'branding':
+            return "品销宝";
+            break;
 
     }
     return text;

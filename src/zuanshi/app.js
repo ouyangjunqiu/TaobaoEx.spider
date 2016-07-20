@@ -1281,6 +1281,48 @@
         }, 1000);
     };
 
+    /**
+     * 批量替换资源位
+     * @param crowd
+     * @param adzoneId
+     * @param adzoneType
+     * @param bidPrice
+     * @param fn
+     * @param err
+     */
+    CPS.app.targetReplaceAdzone = function(crowd,adzoneId,adzoneType,bidPrice,fn,err){
+        var l = [];
+        l.push({
+            "campaignId":crowd.campaignId,
+            "adzoneId":adzoneId,
+            "adzoneType":adzoneType,
+            "transId":crowd.transId,
+            "matrixPriceBatchVOList":[{"targetId":crowd.targetId,"targetType":crowd.targetType,"bidPrice":bidPrice}]
+        });
+        $.ajax({
+            url: 'http://zuanshi.taobao.com/adgroup/bind/updateAllAdzoneBind.json',
+            dataType: 'json',
+            data: {
+                csrfID: CPS.app.csrfID,
+                adgroupBindAdzoneVOList:JSON.stringify(l)
+            },
+            type: 'post',
+            success: function (resp) {
+                if(resp.info && resp.info.ok){
+                    fn(resp.data);
+                }else{
+                    err();
+                }
+
+            },
+            error:function(){
+                err();
+            }
+        });
+
+    };
+
+
 
     /**
      * 批量增加资源位
@@ -2216,7 +2258,7 @@
             "<select name='adzoneId'><option value='34502344,2'>PC_流量包_网上购物_淘宝首页焦点图(34502344)</option></select>"+
             "</p></td></tr>"+
             "<tr><td>出价：</td><td><input type='text' name='bidPrice' value='10'/></td><td></td></tr>"+
-            "<tr><td><a class='CPS_bt' id='CPS_adzone_btn' href='javascript:void(0)'>增加资源位</a></td><td></td><td></td></tr>" +
+            "<tr><td><a class='CPS_bt' id='CPS_adzone_btn' href='javascript:void(0)'>开始调整</a></td><td></td><td></td></tr>" +
             "</table></div>";
 
         $("#CPS_tools_container .content .panel").html(panel);
@@ -2252,7 +2294,7 @@
 
                 for(var i in transList) {
                     var trans = transList[i];
-                    CPS.app.targetAddAdzones(trans,adzoneId,type,bidPrice,function(){CPS.time.success()},function(){CPS.time.fail()});
+                    CPS.app.targetReplaceAdzone(trans,adzoneId,type,bidPrice,function(){CPS.time.success()},function(){CPS.time.fail()});
                 }
 
             });
@@ -2445,6 +2487,7 @@
             "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust'>统一出价...</a></li>"+
             "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust_i'>加大投放...</a></li>"+
             "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust_d'>减少投放...</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_adzone'>替换资源位...</a></li>"+
             "<li><a href='javascript:void(0)' data-target='CPS_layout_adboard'>替换创意...</a></li>"+
             "</ul><div id='CPS_layout_icon'><div class='img_box'><i class='icon'></i></div></div></div>";
         $("body").append(menuHtml);
@@ -2468,9 +2511,9 @@
             CPS.layout.adjust_d();
         });
 
-        //$("#CPS_layout_menu a[data-target='CPS_layout_add_ad']").click(function(){
-        //    CPS.layout.addadzone();
-        //});
+        $("#CPS_layout_menu a[data-target='CPS_layout_adzone']").click(function(){
+            CPS.layout.addadzone();
+        });
         //
         //$("#CPS_layout_menu a[data-target='CPS_layout_del_ad']").click(function(){
         //    CPS.layout.deladzone();

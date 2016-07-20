@@ -2,9 +2,10 @@
     var CPS = {};
     CPS.sycm = {};
 
-    CPS.sycm.getShopSummary = function(name,token){
+    CPS.sycm.getShopSummary = function(){
         setTimeout(function() {
-
+            var m = CPS.sycm.micro;
+            var token = m.token;
             var date = new Date();
             var startDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 7);
             var endDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 1);
@@ -13,7 +14,7 @@
                 dataType: 'json',
                 type: 'get',
                 success: function (resp) {
-                    chrome.extension.sendMessage({resp: resp, nick: name, type: 'trade'});
+                    chrome.extension.sendMessage({resp: resp, nick:CPS.sycm.shopname , type: 'trade'});
                 },
                 error: function () {
                     alert("data error!!");
@@ -27,11 +28,11 @@
                     // console.log(resp);
                     if(resp.content && resp.content.data && resp.content.data.payAmt &&  resp.content.data.payAmt.trend) {
                         chrome.extension.sendMessage({
-                            payAmt: resp.content.data.payAmt.trend,
-                            nick: name,
+                            payAmt: JSON.stringify(resp.content.data.payAmt.trend),
+                            nick: CPS.sycm.shopname,
                             type: 'PAYAMT'
                         });
-                        chrome.extension.sendMessage({resp: resp, nick: name, type: 'totalTrade'});
+                        chrome.extension.sendMessage({resp: resp, nick: CPS.sycm.shopname, type: 'totalTrade'});
                     }
                 },
                 error: function () {
@@ -39,6 +40,37 @@
                 }
             });
         },1000);
+    };
+
+    CPS.sycm.getShopSummary2 = function(){
+        var m = CPS.sycm.micro;
+        var date = new Date();
+        var startDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 7);
+        var endDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 1);
+        $.ajax({
+            url: 'https://sycm.taobao.com/bda/summary/getShopSummaryTrend.json',
+            dataType: 'json',
+            data:{dateRange:endDate + "|" + endDate,dateType:"day",device:0,indexCode:"payAmt"},
+            type: 'get',
+            success: function (resp) {
+                console.log(resp);
+                if(resp.content && resp.content.data && resp.content.data.payAmt) {
+                    chrome.extension.sendMessage({
+                        payAmt: JSON.stringify(resp.content.data.payAmt),
+                        nick: m.runAsUserName,
+                        usernumid: m.runAsUserId,
+                        shopname: m.runAsShopTitle,
+                        shopid: m.runAsShopId,
+                        type: 'PAYAMT'
+                    });
+                    chrome.extension.sendMessage({resp: resp, nick: name, type: 'totalTrade'});
+                }
+            },
+            error: function () {
+                alert("data error!!");
+            }
+        });
+
     };
 
     CPS.sycm.microdata = function(){
@@ -51,6 +83,7 @@
                 m[r[0]] = r[1];
             }
         });
+        CPS.sycm.micro = m;
         return m;
     };
 
@@ -58,32 +91,53 @@
         var d = $(".shop-info .shop-title");
         if(d){
             var name = d.text().trim();
-            var shopcatname = $(".shop .cate-name").text().trim();
+            CPS.sycm.microdata();
+            CPS.sycm.shopname = name;
+            var m = CPS.sycm.micro;
 
-            var m = CPS.sycm.microdata();
-            var token = m["token"];
-            CPS.sycm.token = token;
-            CPS.sycm.userId = m["userId"];
-            console.log(m);
-            if(name && token) {
-
-                chrome.extension.sendMessage({shopname: name,usernumid:CPS.sycm.userId,shopcatname:shopcatname,type: 'SHOP_CLOUD_UPDATE'}, function (resp) {});
-                chrome.extension.sendMessage({nick: name, type: 'HAS_GET_PAY_AMT'}, function (resp) {
-                    console.log(resp);
-                    if (!resp.hasget)
-                        CPS.sycm.getShopSummary(name,token.trim());
-                });
+            if(m && m.token) {
+                CPS.sycm.run();
+            }else if(m && m.legalityToken){
+                CPS.sycm.run2();
             }
         }else {
             setTimeout(function() {CPS.sycm.init()},2000);
         }
     };
 
-    setTimeout(function() {
-        CPS.sycm.init();
+    CPS.sycm.run = function(){
+        var m = CPS.sycm.micro;
+        var shopcatname = $(".shop .cate-name").text().trim();
 
-    },1000);
+        chrome.extension.sendMessage({shopname: CPS.sycm.shopname,usernumid:m.userId,shopcatname:shopcatname,type: 'SHOP_CLOUD_UPDATE'}, function (resp) {});
+        chrome.extension.sendMessage({nick: name, type: 'HAS_GET_PAY_AMT'}, function (resp) {
+            console.log(resp);
+            if (!resp.hasget)
+                CPS.sycm.getShopSummary();
+        });
+    };
 
+
+    CPS.sycm.run2 = function(){
+        var m = CPS.sycm.micro;
+
+        var shopcatname = $("[data-card-id='IndustryRank']").find(".SIndustryRankSIndustryRank__type").text().trim();
+        console.log(shopcatname);
+        chrome.extension.sendMessage({shopname: m.runAsShopTitle,shopid: m.runAsShopId,usernumid:m.runAsUserId,nick: m.runAsUserName,shopcatname:shopcatname,type: 'SHOP_CLOUD_UPDATE'}, function (resp) {});
+        chrome.extension.sendMessage({nick: m.runAsShopTitle, type: 'HAS_GET_PAY_AMT'}, function (resp) {
+            console.log(resp);
+            if (!resp.hasget)
+                CPS.sycm.getShopSummary2();
+        });
+
+    };
+
+    $(document).ready(function(){
+        setTimeout(function() {
+            CPS.sycm.init();
+
+        },4000);
+    });
 
 })($);
 
