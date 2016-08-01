@@ -95,20 +95,23 @@
                 url: 'http://zuanshi.taobao.com/loginUser/info.json',
                 type: 'GET',
                 dataType: 'jsonp',
-                success: function (data) {
-                    CPS.app.csrfID = data.data.csrfID;
-                    CPS.app.info = data.data;
-                    CPS.app.loginUser = data.data.loginUser;
-                    CPS.app.shopId = data.data.loginUser.shopId;
+                jsonpCallback: 'jsonp29',
+                success: function (resp) {
+                    CPS.app.csrfID = resp.data.csrfID;
+                    CPS.app.rptToken = resp.data.rptToken;
+                    CPS.app.info = resp.data;
+                    CPS.app.loginUser = resp.data.loginUser;
+                    CPS.app.shopId = resp.data.loginUser.shopId;
+                    CPS.app.productId = resp.data.productPermission.productZuanshi.productId;
                     CPS.app.postUser();
 
                     CPS.layout.window();
 
-                    var dateFormat = new DateFormat();
-                    var hour = dateFormat.formatCurrentDate("HH");
+                    var f = new DateFormat();
+                    var h = f.formatCurrentDate("HH");
 
-                    hour = parseInt(hour);
-                    if(hour>=8 && hour<=23){
+                    h = parseInt(h);
+                    if(h>=8 && h<=23){
                         CPS.app.getAdvertiserHour();
                         CPS.app.campaignRptnToday();
 
@@ -210,19 +213,92 @@
     CPS.app.run = function () {
 
         CPS.app.accountRpt();
-        CPS.app.accountRpt2();
+
+        CPS.app.rptnAdvertiser("click",3);
+        CPS.app.rptnAdvertiser("click",7);
+        CPS.app.rptnAdvertiser("click",15);
 
         setTimeout(function(){
-            CPS.app.rptnAdboardAll2();
-            CPS.app.rptnDestAll2();
-            CPS.app.rptnAdzoneAll2();
-            CPS.app.rptnDestAdzoneAll2();
+
+            var f = new DateFormat();
+            var e1 = f.addDays(new Date(), -15, "yyyy-MM-dd");
+
+
+            CPS.rpt.adboardHistory({effect:3,effectType:"click",startTime:e1,endTime:e1});
+            CPS.rpt.adboardHistory({effect:7,effectType:"click",startTime:e1,endTime:e1});
+            CPS.rpt.adboardHistory({effect:15,effectType:"click",startTime:e1,endTime:e1});
+
+            CPS.rpt.targetHistory({effect:3,effectType:"click",startTime:e1,endTime:e1});
+            CPS.rpt.targetHistory({effect:7,effectType:"click",startTime:e1,endTime:e1});
+            CPS.rpt.targetHistory({effect:15,effectType:"click",startTime:e1,endTime:e1});
+
+            CPS.rpt.adzoneHistory({effect:3,effectType:"click",startTime:e1,endTime:e1});
+            CPS.rpt.adzoneHistory({effect:7,effectType:"click",startTime:e1,endTime:e1});
+            CPS.rpt.adzoneHistory({effect:15,effectType:"click",startTime:e1,endTime:e1});
+
+            CPS.rpt.targetadzoneHistory({effect:3,effectType:"click",startTime:e1,endTime:e1});
+            CPS.rpt.targetadzoneHistory({effect:7,effectType:"click",startTime:e1,endTime:e1});
+            CPS.rpt.targetadzoneHistory({effect:15,effectType:"click",startTime:e1,endTime:e1});
+
+            // CPS.app.rptnAdboardAll2();
+            //CPS.app.rptnDestAll2();
+           // CPS.app.rptnAdzoneAll2();
+           // CPS.app.rptnDestAdzoneAll2();
             setTimeout(function(){
-                CPS.app.rptnAdboardAll();
-                CPS.app.rptnDestAll();
-                CPS.app.rptnAdzoneAll();
+            //    CPS.app.rptnAdboardAll();
+            //    CPS.app.rptnDestAll();
+            //    CPS.app.rptnAdzoneAll();
             },4000);
         },1000);
+        setTimeout(function(){
+            var f = new DateFormat();
+            var e2 = f.addDays(new Date(), -16, "yyyy-MM-dd");
+            CPS.rpt.adboardHistory({effect:3,effectType:"click",startTime:e2,endTime:e2});
+            CPS.rpt.adboardHistory({effect:7,effectType:"click",startTime:e2,endTime:e2});
+            CPS.rpt.adboardHistory({effect:15,effectType:"click",startTime:e2,endTime:e2});
+
+            CPS.rpt.targetHistory({effect:3,effectType:"click",startTime:e2,endTime:e2});
+            CPS.rpt.targetHistory({effect:7,effectType:"click",startTime:e2,endTime:e2});
+            CPS.rpt.targetHistory({effect:15,effectType:"click",startTime:e2,endTime:e2});
+
+            CPS.rpt.adzoneHistory({effect:3,effectType:"click",startTime:e2,endTime:e2});
+            CPS.rpt.adzoneHistory({effect:7,effectType:"click",startTime:e2,endTime:e2});
+            CPS.rpt.adzoneHistory({effect:15,effectType:"click",startTime:e2,endTime:e2});
+
+            CPS.rpt.targetadzoneHistory({effect:3,effectType:"click",startTime:e2,endTime:e2});
+            CPS.rpt.targetadzoneHistory({effect:7,effectType:"click",startTime:e2,endTime:e2});
+            CPS.rpt.targetadzoneHistory({effect:15,effectType:"click",startTime:e2,endTime:e2});
+           // CPS.app.rptnAdboardAll3();
+            //CPS.app.rptnDestAll3();
+           // CPS.app.rptnAdzoneAll3();
+           // CPS.app.rptnDestAdzoneAll3();
+            setTimeout(function(){
+             //   CPS.app.rptnAdboardAll4();
+                var f = new DateFormat();
+                var e3 = f.addDays(new Date(), -17, "yyyy-MM-dd");
+                CPS.rpt.adboardHistory({effect:3,effectType:"click",startTime:e3,endTime:e3});
+                CPS.rpt.adboardHistory({effect:7,effectType:"click",startTime:e3,endTime:e3});
+                CPS.rpt.adboardHistory({effect:15,effectType:"click",startTime:e3,endTime:e3});
+
+                CPS.rpt.targetHistory({effect:3,effectType:"click",startTime:e3,endTime:e3});
+                CPS.rpt.targetHistory({effect:7,effectType:"click",startTime:e3,endTime:e3});
+                CPS.rpt.targetHistory({effect:15,effectType:"click",startTime:e3,endTime:e3});
+
+
+                CPS.rpt.adzoneHistory({effect:3,effectType:"click",startTime:e3,endTime:e3});
+                CPS.rpt.adzoneHistory({effect:7,effectType:"click",startTime:e3,endTime:e3});
+                CPS.rpt.adzoneHistory({effect:15,effectType:"click",startTime:e3,endTime:e3});
+
+                CPS.rpt.targetadzoneHistory({effect:3,effectType:"click",startTime:e3,endTime:e3});
+                CPS.rpt.targetadzoneHistory({effect:7,effectType:"click",startTime:e3,endTime:e3});
+                CPS.rpt.targetadzoneHistory({effect:15,effectType:"click",startTime:e3,endTime:e3});
+
+             //   CPS.app.rptnDestAll4();
+             //   CPS.app.rptnAdzoneAll4();
+             //   CPS.app.rptnDestAdzoneAll4();
+            },4000);
+
+        },8000);
 
     };
 
@@ -272,48 +348,54 @@
     };
 
     /**
-     *  获取明星店铺报表
-     *  @version 2.9.6
+     *  获取展示网络报表
+     *  @version 3.1.2
      */
-    CPS.app.accountRpt2 = function () {
-        if(CPS.mutex.is("rpt2")) return false;
+    CPS.app.rptnAdvertiser = function (effectType,effect) {
+        if(CPS.mutex.is("advertiser."+effectType+"."+effect)) return false;
+
         var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
             var f = new DateFormat();
             var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
             var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
+
             $.ajax({
-                url: 'http://zuanshi.taobao.com/rptn/advertiserCmDay/all.json',
+                url: 'http://report.simba.taobao.com/common/query/zszw/1/rptAdvertiserDayList.json',
                 dataType: 'json',
-                data: {csrfID:  CPS.app.csrfID, startTime: b, endTime: e, campaignModel: 2},
+                //   jsonpCallback: 'jsonp53258',
+                data: {csrfID:  CPS.app.csrfID,token:CPS.app.rptToken,productId:CPS.app.productId, startTime: b, endTime: e, campaignModel: 1,effectType:effectType,effect:effect},
                 type: 'get',
-                success: function (data) {
-                    CPS.app.postAccountRpt2(data);
+                success: function (resp) {
+                    CPS.app.postAdvertiserRpt(effectType,effect,resp.data.result);
+                    // console.log(resp);
                 }
             });
+
 
         }, t);
     };
 
     /**
-     * 提交明星店铺报表到平台
-     * @version 2.9.6
+     * 提交展示网络报表到平台
+     * @version 3.1.2
      */
-    CPS.app.postAccountRpt2 = function (rpts) {
+    CPS.app.postAdvertiserRpt = function (effectType,effect,data) {
         var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
             $.ajax({
-                url: 'http://cps.da-mai.com/zuanshi/rpt/source2.html',
+                url: 'http://cps.da-mai.com/zuanshi/advertiserrpt/source.html',
                 dataType: 'json',
-                data: {userinfo: CPS.app.csrfID, rpts: JSON.stringify(rpts), nick: CPS.app.nick},
+                data: {effectType: effectType, effect:effect, data: JSON.stringify(data), nick: CPS.app.nick},
                 type: 'post',
                 success: function (data) {
-                    CPS.mutex.lock("rpt2")
+                    CPS.mutex.lock("advertiser."+effectType+"."+effect)
                 }
             });
 
         }, t);
     };
+
 
     /**
      * 获取实时数据
@@ -369,43 +451,39 @@
      * @version 2.9.7
      *
      */
-    CPS.app.rptnAdboardDayList = function(b,e,offset,fn){
-        var k = "adboard."+b+"."+e+"."+offset;
-        var _k = CPS.app.shopId+"."+k+".data";
-        if(offset>0 && CPS.mutex.is(k)){
+    CPS.app.rptnAdboardDayList = function(arg,fn){
+
+        var k = "adboard."+arg.effectType+arg.effect+"."+arg.startTime+"."+arg.endTime+"."+arg.offset;
+        if(CPS.mutex.is(k)){
             return false;
-        }else if(offset<=0 && CPS.mutex.is(k)){
-            var d = CPS.storage.get(_k);
-            fn(d,offset);
-            return true;
         }
-        var t = parseInt(Math.random()*1000+offset*10);
+
+        var t = parseInt(Math.random()*1000+arg.offset*10);
         var r = function() {
 
             return $.ajax({
-                url: 'http://zuanshi.taobao.com/rptn/adboardDay/list.json',
+                url: 'http://report.simba.taobao.com/common/query/zszw/1/rptCreativeList.json',
                 dataType: 'json',
                 data: {
-                    csrfID: CPS.app.csrfID,
-                    startTime: b,
-                    endTime: e,
-                    pageSize: 100,
-                    offset: offset,
+                    csrfID:  CPS.app.csrfID,
+                    token:CPS.app.rptToken,
+                    productId:CPS.app.productId,
+                    startTime: arg.startTime,
+                    endTime: arg.endTime,
                     campaignModel: 1,
-                    campaignName: "",
-                    transName: "",
-                    adboardName: "",
-                    sortField: "charge",
-                    sortRule: "desc"
+                    effectType:arg.effectType,
+                    effect:arg.effect,
+                    pageIndex:arg.offset/100+1,
+                    offset:arg.offset,
+                    pageSize:100
+
+
                 },
                 type: 'get',
                 success: function (resp) {
                     if (resp && resp.info && resp.info.ok) {
                         CPS.mutex.lock(k);
-                        fn(resp.data, offset);
-                        if(offset<=0){
-                            CPS.storage.set(_k,resp.data);
-                        }
+                        fn(resp.data,arg);
                     }
 
                 }
@@ -419,62 +497,91 @@
      * @version 3.0.5
      *
      */
-    CPS.app.rptnAdboardAll = function(){
-        var f = new DateFormat();
-        var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
-        var b = f.addDays(new Date(), -7, "yyyy-MM-dd");
-
-        CPS.app.rptnAdboardDayList(b,e,0,function(data){
-
-            CPS.app.postRptnAboard(data,0);
-
-            for(var offset = 100;offset < data.count;offset+=100){
-
-                CPS.app.rptnAdboardDayList(b,e,offset,function(rpt,i){
-
-                    CPS.app.postRptnAboard(rpt,i);
-                });
-
-            }
-
-        });
-    };
+    //CPS.app.rptnAdboardAll = function(){
+    //    var f = new DateFormat();
+    //    var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
+    //    var b = f.addDays(new Date(), -7, "yyyy-MM-dd");
+    //
+    //    CPS.app.rptnAdboardDayList(b,e,0,function(data){
+    //
+    //        CPS.app.postRptnAboard(data,0);
+    //
+    //        for(var offset = 100;offset < data.count;offset+=100){
+    //
+    //            CPS.app.rptnAdboardDayList(b,e,offset,function(rpt,i){
+    //
+    //                CPS.app.postRptnAboard(rpt,i);
+    //            });
+    //
+    //        }
+    //
+    //    });
+    //};
     /**
      * 提交创意统计报表
      * @version 3.0.5
      *
      */
-    CPS.app.postRptnAboard = function(data,offset){
-        $.ajax({
-            url:"http://cps.da-mai.com/zuanshi/adboard/source.html",
-            type:"post",
-            data:{
-                rpt:JSON.stringify(data),nick:CPS.app.nick,offset:offset
+    //CPS.app.postRptnAboard = function(effectType,effect,data,offset){
+    //    $.ajax({
+    //        url:"http://cps.da-mai.com/zz/history/adboard.html",
+    //        type:"post",
+    //        data:{
+    //            data:JSON.stringify(data),nick:CPS.app.nick,offset:offset
+    //        },
+    //        dataType:"json",
+    //        success:function(){
+    //        }
+    //    })
+    //};
+
+    CPS.rpt.CreativeListCount = function(arg,fn){
+        return $.ajax({
+            url: 'http://report.simba.taobao.com/common/count/zszw/1/rptCreativeListCount.json',
+            dataType: 'json',
+            data: {
+                csrfID:  CPS.app.csrfID,
+                token:CPS.app.rptToken,
+                productId:CPS.app.productId,
+                startTime: arg.startTime,
+                endTime: arg.endTime,
+                campaignModel: 1,
+                effectType: arg.effectType,
+                effect: arg.effect,
+                pageIndex:1,
+                offset:0,
+                pageSize:100
+
+
             },
-            dataType:"json",
-            success:function(){
+            type: 'get',
+            success: function (resp) {
+                if (resp && resp.info && resp.info.ok) {
+                    fn(resp.data,arg);
+                }
+
             }
         })
     };
 
     /**
      * 获取所有的创意统计报表
-     * @version 3.0.5
+     * @version 3.2.0
      *
      */
-    CPS.app.rptnAdboardAll2 = function(){
-        var f = new DateFormat();
-        var e = f.addDays(new Date(), -16, "yyyy-MM-dd");
-        var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
+    CPS.rpt.adboardHistory = function(arg){
 
-        CPS.app.rptnAdboardDayList(b,e,0,function(data){
+        CPS.rpt.CreativeListCount(arg,function(c,args){
 
-            CPS.app.postRptnAboard2(data,e,0);
-
-            for(var offset = 100;offset < data.count;offset+=100){
-
-                CPS.app.rptnAdboardDayList(b,e,offset,function(rpt,i){
-                    CPS.app.postRptnAboard2(rpt,b,i);
+            for(var offset = 0;offset < c.count;offset+=100){
+                CPS.app.rptnAdboardDayList({
+                    effect:args.effect,
+                    effectType:args.effectType,
+                    offset:offset,
+                    startTime:args.startTime,
+                    endTime:args.endTime
+                },function(rpt,argi){
+                    CPS.app.postRptnAboard2(rpt,argi);
 
                 });
 
@@ -482,17 +589,24 @@
 
         });
     };
+
     /**
      * 提交创意统计报表
      * @version 3.0.5
      *
      */
-    CPS.app.postRptnAboard2 = function(data,logdate,offset){
+    CPS.app.postRptnAboard2 = function(rpt,arg){
+       // console.log(arg);
         $.ajax({
-            url:"http://cps.da-mai.com/bigdata/adboard/source.html",
+            url:"http://cps.da-mai.com/zz/history/adboard.html",
             type:"post",
             data:{
-                rpt:JSON.stringify(data),nick:CPS.app.nick,logdate:logdate,offset:offset
+                data:JSON.stringify(rpt),
+                nick:CPS.app.nick,
+                logdate:arg.startTime,
+                offset:arg.offset,
+                effectType:arg.effectType,
+                effect:arg.effect
             },
             dataType:"json",
             success:function(){
@@ -505,112 +619,94 @@
      * @version 2.9.7
      *
      */
-    CPS.app.rptnDestDayList = function(b,e,offset,fn){
-        var k = "dest."+b+"."+e+"."+offset;
-        var _k = CPS.app.shopId+"."+k+".data";
-        if(offset>0 && CPS.mutex.is(k)){
+    CPS.app.rptnDestDayList = function(arg,fn){
+        var k = "dest."+arg.effectType+arg.effect+"."+arg.startTime+"."+arg.endTime+"."+arg.offset;
+        if(CPS.mutex.is(k)){
             return false;
-        }else if(offset<=0 && CPS.mutex.is(k)){
-            var d = CPS.storage.get(_k);
-            fn(d,offset);
-            return true;
         }
-        var t = parseInt(Math.random()*1000+offset*10);
+
+        var t = parseInt(Math.random()*1000+arg.offset*10);
         var r = function() {
 
             return $.ajax({
-                url: 'http://zuanshi.taobao.com/rptn/destDay/list.json',
+                url: 'http://report.simba.taobao.com/common/query/zszw/1/rptTargetList.json',
                 dataType: 'json',
                 data: {
-                    csrfID: CPS.app.csrfID,
-                    startTime: b,
-                    endTime: e,
-                    pageSize: 200,
-                    offset: offset,
+                    csrfID:  CPS.app.csrfID,
+                    token:CPS.app.rptToken,
+                    productId:CPS.app.productId,
+                    startTime: arg.startTime,
+                    endTime: arg.endTime,
                     campaignModel: 1,
-                    campaignName: "",
-                    transName: "",
-                    adboardName: "",
-                    sortField: "charge",
-                    sortRule: "desc"
+                    effectType:arg.effectType,
+                    effect:arg.effect,
+                    pageIndex:arg.offset/100+1,
+                    offset:arg.offset,
+                    pageSize:100
+
+
                 },
                 type: 'get',
                 success: function (resp) {
                     if (resp && resp.info && resp.info.ok) {
                         CPS.mutex.lock(k);
-                        fn(resp.data, offset);
-                        if(offset<=0){
-                            CPS.storage.set(_k,resp.data);
-                        }
+                        fn(resp.data,arg);
                     }
+
                 }
             })
         };
         setTimeout(r,t);
     };
 
-    /**
-     * 获取所有的创意统计报表
-     * @version 2.9.7
-     *
-     */
-    CPS.app.rptnDestAll = function(){
+    CPS.rpt.TargetListCount = function(arg,fn){
+        return $.ajax({
+            url: 'http://report.simba.taobao.com/common/count/zszw/1/rptTargetListCount.json',
+            dataType: 'json',
+            data: {
+                csrfID:  CPS.app.csrfID,
+                token:CPS.app.rptToken,
+                productId:CPS.app.productId,
+                startTime: arg.startTime,
+                endTime: arg.endTime,
+                campaignModel: 1,
+                effectType: arg.effectType,
+                effect: arg.effect,
+                pageIndex:1,
+                offset:0,
+                pageSize:100
 
-        var f = new DateFormat();
-        var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
-        var b = f.addDays(new Date(), -7, "yyyy-MM-dd");
 
-        CPS.app.rptnDestDayList(b,e,0,function(data){
-
-            CPS.app.postRptnDest(data,0);
-
-            for(var offset = 200;offset < data.count;offset+=200){
-
-                CPS.app.rptnDestDayList(b,e,offset,function(rpt,i){
-                    CPS.app.postRptnDest(rpt,i);
-                });
-
-            }
-
-        });
-    };
-
-    /**
-     * 提交定向统计报表
-     * @version 3.0.5
-     *
-     */
-    CPS.app.postRptnDest = function(data,offset){
-        $.ajax({
-            url:"http://cps.da-mai.com/zuanshi/dest/source.html",
-            type:"post",
-            data:{
-                rpt:JSON.stringify(data),nick:CPS.app.nick,offset:offset
             },
-            dataType:"json",
-            success:function(){
+            type: 'get',
+            success: function (resp) {
+                if (resp && resp.info && resp.info.ok) {
+                    fn(resp.data,arg);
+                }
+
             }
         })
     };
 
-
     /**
      * 获取所有的定向统计报表
-     * @version 3.0.5
+     * @version 3.2.0
      *
      */
-    CPS.app.rptnDestAll2 = function(){
-        var f = new DateFormat();
-        var e = f.addDays(new Date(), -16, "yyyy-MM-dd");
-        var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
-        CPS.app.rptnDestDayList(b,e,0,function(data){
+    CPS.rpt.targetHistory = function(arg){
 
-            CPS.app.postRptnDest2(data,b,0);
+        CPS.rpt.TargetListCount(arg,function(c,args){
 
-            for(var offset = 200;offset < data.count;offset+=200){
+            for(var offset = 0;offset < c.count;offset+=100){
+                CPS.app.rptnDestDayList({
+                    effect:args.effect,
+                    effectType:args.effectType,
+                    offset:offset,
+                    startTime:args.startTime,
+                    endTime:args.endTime
+                },function(rpt,argi){
+                    CPS.app.postRptnDest2(rpt,argi);
 
-                CPS.app.rptnDestDayList(b,e,offset,function(rpt,i){
-                    CPS.app.postRptnDest2(rpt,b,i);
                 });
 
             }
@@ -618,17 +714,24 @@
         });
     };
 
+
+
     /**
      * 提交定向统计报表
      * @version 3.0.5
      *
      */
-    CPS.app.postRptnDest2 = function(data,logdate,offset){
+    CPS.app.postRptnDest2 = function(rpt,arg){
         $.ajax({
-            url:"http://cps.da-mai.com/bigdata/dest/source.html",
+            url:"http://cps.da-mai.com/zz/history/dest.html",
             type:"post",
             data:{
-                rpt:JSON.stringify(data),nick:CPS.app.nick,offset:offset,logdate:logdate
+                data:JSON.stringify(rpt),
+                nick:CPS.app.nick,
+                logdate:arg.startTime,
+                offset:arg.offset,
+                effectType:arg.effectType,
+                effect:arg.effect
             },
             dataType:"json",
             success:function(){
@@ -641,43 +744,38 @@
      * @version 2.9.7
      *
      */
-    CPS.app.rptnDestAdzoneDayList = function(b,e,offset,fn){
-        var k = "destadzone."+b+"."+e+"."+offset;
-        var _k = CPS.app.shopId+"."+k+".data";
-        if(offset>0 && CPS.mutex.is(k)){
+    CPS.app.rptnDestAdzoneDayList = function(arg,fn){
+        var k = "destadzone."+arg.effectType+arg.effect+"."+arg.startTime+"."+arg.endTime+"."+arg.offset;
+        if(CPS.mutex.is(k)){
             return false;
-        }else if(offset<=0 && CPS.mutex.is(k)){
-            var d = CPS.storage.get(_k);
-            fn(d,offset);
-            return true;
         }
 
-        var t = parseInt(Math.random()*1000+offset*10);
+        var t = parseInt(Math.random()*1000+arg.offset*10);
         var r = function() {
 
             return $.ajax({
-                url: 'http://zuanshi.taobao.com/rptn/destAdzoneDay/list.json',
+                url: 'http://report.simba.taobao.com/common/query/zszw/1/rptTargetAdzoneList.json',
                 dataType: 'json',
                 data: {
-                    csrfID: CPS.app.csrfID,
-                    startTime: b,
-                    endTime: e,
-                    pageSize: 200,
-                    offset: offset,
+                    csrfID:  CPS.app.csrfID,
+                    token:CPS.app.rptToken,
+                    productId:CPS.app.productId,
+                    startTime: arg.startTime,
+                    endTime: arg.endTime,
                     campaignModel: 1,
-                    campaignName: "",
-                    transName: "",
-                    sortField: "charge",
-                    sortRule: "desc"
+                    effectType:arg.effectType,
+                    effect:arg.effect,
+                    pageIndex:arg.offset/100+1,
+                    offset:arg.offset,
+                    pageSize:100
+
+
                 },
                 type: 'get',
                 success: function (resp) {
                     if (resp && resp.info && resp.info.ok) {
                         CPS.mutex.lock(k);
-                        fn(resp.data, offset);
-                        if(offset<=0){
-                            CPS.storage.set(_k,resp.data);
-                        }
+                        fn(resp.data,arg);
                     }
 
                 }
@@ -686,23 +784,55 @@
         setTimeout(r,t);
     };
 
+    CPS.rpt.TargetAdzoneListCount = function(arg,fn){
+        return $.ajax({
+            url: 'http://report.simba.taobao.com/common/count/zszw/1/rptTargetAdzoneListCount.json',
+            dataType: 'json',
+            data: {
+                csrfID:  CPS.app.csrfID,
+                token:CPS.app.rptToken,
+                productId:CPS.app.productId,
+                startTime: arg.startTime,
+                endTime: arg.endTime,
+                campaignModel: 1,
+                effectType: arg.effectType,
+                effect: arg.effect,
+                pageIndex:1,
+                offset:0,
+                pageSize:100
+
+
+            },
+            type: 'get',
+            success: function (resp) {
+                if (resp && resp.info && resp.info.ok) {
+                    fn(resp.data,arg);
+                }
+
+            }
+        })
+    };
+
+
     /**
      * 获取所有的定向统计报表
-     * @version 3.0.5
+     * @version 3.2.0
      *
      */
-    CPS.app.rptnDestAdzoneAll2 = function(){
-        var f = new DateFormat();
-        var e = f.addDays(new Date(), -16, "yyyy-MM-dd");
-        var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
-        CPS.app.rptnDestAdzoneDayList(b,e,0,function(data){
+    CPS.rpt.targetadzoneHistory = function(arg){
 
-            CPS.app.postRptnDestAdzone2(data,b,0);
+        CPS.rpt.TargetAdzoneListCount(arg,function(c,args){
 
-            for(var offset = 200;offset < data.count;offset+=200){
+            for(var offset = 0;offset < c.count;offset+=100){
+                CPS.app.rptnDestAdzoneDayList({
+                    effect:args.effect,
+                    effectType:args.effectType,
+                    offset:offset,
+                    startTime:args.startTime,
+                    endTime:args.endTime
+                },function(rpt,argi){
+                    CPS.app.postRptnDestAdzone2(rpt,argi);
 
-                CPS.app.rptnDestAdzoneDayList(b,e,offset,function(rpt,i){
-                    CPS.app.postRptnDestAdzone2(rpt,b,i);
                 });
 
             }
@@ -710,17 +840,23 @@
         });
     };
 
+
     /**
      * 提交定向统计报表
      * @version 3.0.5
      *
      */
-    CPS.app.postRptnDestAdzone2 = function(data,logdate,offset){
+    CPS.app.postRptnDestAdzone2 = function(rpt,arg){
         $.ajax({
-            url:"http://cps.da-mai.com/bigdata/destadzone/source.html",
+            url:"http://cps.da-mai.com/zz/history/destadzone.html",
             type:"post",
             data:{
-                rpt:JSON.stringify(data),nick:CPS.app.nick,offset:offset,logdate:logdate
+                data:JSON.stringify(rpt),
+                nick:CPS.app.nick,
+                logdate:arg.startTime,
+                offset:arg.offset,
+                effectType:arg.effectType,
+                effect:arg.effect
             },
             dataType:"json",
             success:function(){
@@ -729,48 +865,42 @@
     };
 
     /**
-     * 获取资源位统计报表,新增缓存机制
+     * 获取资源位报表,新增缓存机制
      * @version 3.1.2
      *
      */
-    CPS.app.rptnAdzoneDayList = function(b,e,offset,fn){
-        var k = "adzone."+b+"."+e+"."+offset;
-        var _k = CPS.app.shopId+"."+k+".data";
-        if(offset>0 && CPS.mutex.is(k)){
+    CPS.app.rptnAdzoneDayList = function(arg,fn){
+        var k = "adzone."+arg.effectType+arg.effect+"."+arg.startTime+"."+arg.endTime+"."+arg.offset;
+        if(CPS.mutex.is(k)){
             return false;
-        }else if(offset<=0 && CPS.mutex.is(k)){
-            var d = CPS.storage.get(_k);
-            fn(d,offset);
-            return true;
         }
 
-        var t = parseInt(Math.random()*1000+offset*10);
+        var t = parseInt(Math.random()*1000+arg.offset*10);
         var r = function() {
 
             return $.ajax({
-                url: 'http://zuanshi.taobao.com/rptn/adzoneDay/list.json',
+                url: 'http://report.simba.taobao.com/common/query/zszw/1/rptAdzoneList.json',
                 dataType: 'json',
                 data: {
-                    csrfID: CPS.app.csrfID,
-                    startTime: b,
-                    endTime: e,
-                    pageSize: 200,
-                    offset: offset,
+                    csrfID:  CPS.app.csrfID,
+                    token:CPS.app.rptToken,
+                    productId:CPS.app.productId,
+                    startTime: arg.startTime,
+                    endTime: arg.endTime,
                     campaignModel: 1,
-                    campaignName: "",
-                    transName: "",
-                    adboardName: "",
-                    sortField: "charge",
-                    sortRule: "desc"
+                    effectType:arg.effectType,
+                    effect:arg.effect,
+                    pageIndex:arg.offset/100+1,
+                    offset:arg.offset,
+                    pageSize:100
+
+
                 },
                 type: 'get',
                 success: function (resp) {
                     if (resp && resp.info && resp.info.ok) {
                         CPS.mutex.lock(k);
-                        fn(resp.data, offset);
-                        if(offset<=0){
-                            CPS.storage.set(_k,resp.data);
-                        }
+                        fn(resp.data,arg);
                     }
 
                 }
@@ -779,78 +909,77 @@
         setTimeout(r,t);
     };
 
-    CPS.app.rptnAdzoneAll = function(){
-        var f = new DateFormat();
-        var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
-        var b = f.addDays(new Date(), -7, "yyyy-MM-dd");
+    CPS.rpt.AdzoneListCount = function(arg,fn){
+        return $.ajax({
+            url: 'http://report.simba.taobao.com/common/count/zszw/1/rptAdzoneListCount.json',
+            dataType: 'json',
+            data: {
+                csrfID:  CPS.app.csrfID,
+                token:CPS.app.rptToken,
+                productId:CPS.app.productId,
+                startTime: arg.startTime,
+                endTime: arg.endTime,
+                campaignModel: 1,
+                effectType: arg.effectType,
+                effect: arg.effect,
+                pageIndex:1,
+                offset:0,
+                pageSize:100
 
-        CPS.app.rptnAdzoneDayList(b,e,0,function(data){
 
-            CPS.app.postRptnAdzone(data,0);
-
-            for(var offset = 200;offset < data.count;offset+=200){
-
-                CPS.app.rptnAdzoneDayList(b,e,offset,function(rpt,i){
-                    CPS.app.postRptnAdzone(rpt,i);
-                });
-
-            }
-
-        });
-    };
-    /**
-     * 获取所有的定向统计报表
-     * @version 3.0.5
-     *
-     */
-    CPS.app.rptnAdzoneAll2 = function(){
-        var f = new DateFormat();
-        var e = f.addDays(new Date(), -16, "yyyy-MM-dd");
-        var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
-        CPS.app.rptnAdzoneDayList(b,e,0,function(data){
-
-            CPS.app.postRptnAdzone2(data,b,0);
-
-            for(var offset = 200;offset < data.count;offset+=200){
-
-                CPS.app.rptnAdzoneDayList(b,e,offset,function(rpt,i){
-                    CPS.app.postRptnAdzone2(rpt,b,i);
-                });
-
-            }
-
-        });
-    };
-
-    /**
-     * 提交定向统计报表
-     * @version 3.0.5
-     *
-     */
-    CPS.app.postRptnAdzone = function(data,offset){
-        $.ajax({
-            url:"http://cps.da-mai.com/zuanshi/adzonerpt/source.html",
-            type:"post",
-            data:{
-                rpt:JSON.stringify(data),nick:CPS.app.nick,offset:offset
             },
-            dataType:"json",
-            success:function(){
+            type: 'get',
+            success: function (resp) {
+                if (resp && resp.info && resp.info.ok) {
+                    fn(resp.data,arg);
+                }
+
             }
         })
     };
 
     /**
-     * 提交定向统计报表
+     * 获取所有的资源位报表
+     * @version 3.2.0
+     *
+     */
+    CPS.rpt.adzoneHistory = function(arg){
+
+        CPS.rpt.AdzoneListCount(arg,function(c,args){
+
+            for(var offset = 0;offset < c.count;offset+=100){
+                CPS.app.rptnAdzoneDayList({
+                    effect:args.effect,
+                    effectType:args.effectType,
+                    offset:offset,
+                    startTime:args.startTime,
+                    endTime:args.endTime
+                },function(rpt,argi){
+                    CPS.app.postRptnAdzone2(rpt,argi);
+
+                });
+
+            }
+
+        });
+    };
+
+    /**
+     * 提交资源位报表
      * @version 3.0.5
      *
      */
-    CPS.app.postRptnAdzone2 = function(data,logdate,offset){
+    CPS.app.postRptnAdzone2 = function(rpt,arg){
         $.ajax({
-            url:"http://cps.da-mai.com/bigdata/adzone/source.html",
+            url:"http://cps.da-mai.com/zz/history/adzone.html",
             type:"post",
             data:{
-                rpt:JSON.stringify(data),nick:CPS.app.nick,offset:offset,logdate:logdate
+                data:JSON.stringify(rpt),
+                nick:CPS.app.nick,
+                logdate:arg.startTime,
+                offset:arg.offset,
+                effectType:arg.effectType,
+                effect:arg.effect
             },
             dataType:"json",
             success:function(){
@@ -1072,6 +1201,48 @@
         }, 1000);
     };
 
+    /**
+     * 批量替换资源位
+     * @param crowd
+     * @param adzoneId
+     * @param adzoneType
+     * @param bidPrice
+     * @param fn
+     * @param err
+     */
+    CPS.app.targetReplaceAdzone = function(crowd,adzoneId,adzoneType,bidPrice,fn,err){
+        var l = [];
+        l.push({
+            "campaignId":crowd.campaignId,
+            "adzoneId":adzoneId,
+            "adzoneType":adzoneType,
+            "transId":crowd.transId,
+            "matrixPriceBatchVOList":[{"targetId":crowd.targetId,"targetType":crowd.targetType,"bidPrice":bidPrice}]
+        });
+        $.ajax({
+            url: 'http://zuanshi.taobao.com/adgroup/bind/updateAllAdzoneBind.json',
+            dataType: 'json',
+            data: {
+                csrfID: CPS.app.csrfID,
+                adgroupBindAdzoneVOList:JSON.stringify(l)
+            },
+            type: 'post',
+            success: function (resp) {
+                if(resp.info && resp.info.ok){
+                    fn(resp.data);
+                }else{
+                    err();
+                }
+
+            },
+            error:function(){
+                err();
+            }
+        });
+
+    };
+
+
 
     /**
      * 批量增加资源位
@@ -1154,6 +1325,36 @@
                 targetType:targetType,
                 campaignType:2
                 //trans:JSON.stringify(newTrans)
+            },
+            type: 'post',
+            success: function (resp) {
+                if(resp.info && resp.info.ok) {
+                    fn(resp.data);
+                }else{
+                    err();
+                }
+            },
+            error:function(){
+                err();
+            }
+        });
+    };
+
+    /**
+     *
+     * @param a
+     * @param fn
+     * @param err
+     */
+    CPS.app.getTransXTargetXAdzoneByAdzone = function(a,fn,err){
+        $.ajax({
+            url: 'http://zuanshi.taobao.com/matrixprice/getTransXTargetXAdzoneByCrowd.json',
+            dataType: 'json',
+            data: {
+                csrfID: CPS.app.csrfID,
+                transId: a.transId,
+                adzoneId: a.adzoneId,
+                campaignType: a.campaignType
             },
             type: 'post',
             success: function (resp) {
@@ -1301,6 +1502,25 @@
     };
 
 
+
+    /**
+     * 获取推广组列表
+     * @param campaignId
+     * @param page
+     * @returns {*|{requires}}
+     * @version 2.9.1
+     */
+    CPS.app.findAdgroupList = function(campaignId,page){
+        var offset = (page-1)*40;
+        return $.ajax({
+            url: 'http://zuanshi.taobao.com/adgroup/findAdgroupList.json',
+            dataType: 'json',
+            data: {csrfID: CPS.app.csrfID, campaignId: campaignId,tab:"detail",campaignModel:1,status:25,page:page,offset:offset,pageSize:40},
+            type: 'post'
+        });
+    };
+
+
     /**
      * 获取该计划下的定向列表
      * @param campaignId
@@ -1319,23 +1539,48 @@
         });
     };
 
-
     /**
-     * 获取推广组列表
+     * 获取该计划下的资源位列表
      * @param campaignId
      * @param page
+     * @param fn
+     * @param err
      * @returns {*|{requires}}
      * @version 2.9.1
      */
-    CPS.app.findAdgroupList = function(campaignId,page){
+    CPS.app.findAdzoneList = function(campaignId,page,fn,err){
+
         var offset = (page-1)*40;
-        return $.ajax({
-            url: 'http://zuanshi.taobao.com/adgroup/findAdgroupList.json',
-            dataType: 'json',
-            data: {csrfID: CPS.app.csrfID, campaignId: campaignId,tab:"detail",campaignModel:1,status:25,page:page,offset:offset,pageSize:40},
-            type: 'post'
-        });
+        var t = parseInt(Math.random()*1000+offset*10);
+        setTimeout(function(){
+            $.ajax({
+                url: 'http://zuanshi.taobao.com/horizontalManage/findAdzoneList.json',
+                dataType: 'json',
+                data: {
+                    csrfID: CPS.app.csrfID,
+                    campaignId: campaignId,
+                    campaignModel:1,
+                    tab:"unit_detail_resource_list",
+                    index:page,
+                    offset:offset,
+                    pageSize:40
+                },
+                type: 'post',
+                success:function(resp){
+                    if(resp.info && resp.info.ok && resp.data.list) {
+                        fn(resp.data,page);
+                    }else{
+                        err();
+                    }
+                },
+                error:function(){
+                    err();
+                }
+            });
+        },t);
+
     };
+
 
     /**
      * 获取推广组的创意列表
@@ -1367,6 +1612,64 @@
                 err();
             }
         });
+    };
+
+    /**
+     * 按比率调整出价
+     * @param campaignId
+     * @param rate
+     * @param page
+     * @version 3.1.4
+     */
+    CPS.app.modifyPriceByRate = function(campaignId,rate,page){
+        var fn = function(d1, p){
+            for(var i in d1.list){
+                var a = d1.list[i];
+                CPS.app.getTransXTargetXAdzoneByAdzone(a,function(d2){
+                    for(var j in d2.list){
+                        var b = d2.list[j];
+                        var np = parseFloat((rate + 1)*b.bidPrice);
+
+                        CPS.app.batchModifyMatrixPrice([{"campaignId": b.campaignId,"transId": b.transId,"targetId": b.targetId,"targetType": b.targetType,"bidPrice":np.toFixed(2),"adzoneId": b.adzoneId}]);
+                    }
+
+                },function(){CPS.time.fail()});
+            }
+        };
+        var err = function(){
+            CPS.app.findAdzoneList(campaignId,page,fn,err);
+        };
+
+        CPS.app.findAdzoneList(campaignId,page,fn,err);
+    };
+
+    /**
+     * 按固定值调整出价
+     * @param campaignId
+     * @param val
+     * @param page
+     * @version 3.1.4
+     */
+    CPS.app.modifyPriceByValue = function(campaignId,val,page){
+        var fn = function(d1, p){
+            for(var i in d1.list){
+                var a = d1.list[i];
+                CPS.app.getTransXTargetXAdzoneByAdzone(a,function(d2){
+                    for(var j in d2.list){
+                        var b = d2.list[j];
+                        var np = parseFloat(val);
+
+                        CPS.app.batchModifyMatrixPrice([{"campaignId": b.campaignId,"transId": b.transId,"targetId": b.targetId,"targetType": b.targetType,"bidPrice":np.toFixed(2),"adzoneId": b.adzoneId}]);
+                    }
+
+                },function(){CPS.time.fail()});
+            }
+        };
+        var err = function(){
+            CPS.app.findAdzoneList(campaignId,page,fn,err);
+        };
+
+        CPS.app.findAdzoneList(campaignId,page,fn,err);
     };
 
     /**
@@ -1747,21 +2050,18 @@
     };
 
     CPS.layout.adjust = function(){
+        $("#CPS_tools_container").hide();
 
         var panel = "<div id='auto_adjust_div' class='row'>"+
         "<table class='table'><tr><td>计划编号：</td><td><input type='text' name='campaignid' value=''/></td><td></td></tr>"+
-        "<tr><td>资源位：</td><td colspan='2'><p class='adzone_input'>" +
-        "<select name='adzoneId'><option value='34502344,2'>PC_流量包_网上购物_淘宝首页焦点图(34502344)</option></select>"+
-        "</p></td></tr>"+
         "<tr><td>出价：</td><td><input type='text' name='bidPrice' value='10'/></td><td></td></tr>"+
-        "<tr><td><a class='CPS_bt' id='CPS_auto_adjust'>批量调价</a></td><td></td><td></td></tr>" +
+        "<tr><td><a class='CPS_bt' id='CPS_auto_adjust'>开始调整</a></td><td></td><td></td></tr>" +
         "</table></div>";
 
         $("#CPS_exector_msg").html("");
 
         $("#CPS_tools_container .content .panel").html(panel);
-        $("#CPS_tools_container").hide();
-        CPS.app.adzoneSelectHtml();
+
 
         $("#CPS_auto_adjust").unbind();
         $("#CPS_auto_adjust").one("click",function(){
@@ -1770,33 +2070,104 @@
 
             var campaignid = $("#auto_adjust_div").find("input[name=campaignid]").val();
             var bidPrice =  $("#auto_adjust_div").find("input[name=bidPrice]").val();
-            var ad = $("#auto_adjust_div").find("select[name=adzoneId]").val();
-            var adzoneId = ad.split(",")[0];
+            if(isNaN(parseInt(bidPrice)) || bidPrice<=0){
+                self.html("请填写正确的出价");
+                return;
+            }
 
-            $.when(CPS.app.findCrowdList(campaignid,1),CPS.app.findCrowdList(campaignid,2),CPS.app.findCrowdList(campaignid,3)).then(function(a,b,c){
-                var targets = [];
-                if(a[0].data && a[0].data.list){
-                    targets = targets.concat(a[0].data.list);
-                }
-                if(b[0].data && b[0].data.list){
-                    targets = targets.concat(b[0].data.list);
-                }
-                if(c[0].data && c[0].data.list){
-                    targets = targets.concat(c[0].data.list);
+            CPS.app.findAdzoneList(campaignid,1,function(data){
+                var c = data.count;
+                CPS.time.start(c);
+                var pt = parseInt((c+39)/40);
+                for(var p =1;p<=pt;p++){
+                    CPS.app.modifyPriceByValue(campaignid,bidPrice,p);
                 }
 
-                CPS.time.start(targets.length);
-
-                var list = targets;
-
-                for(var j in list){
-                    var matrixPrice = [{"campaignId":list[j].campaignId,"transId":list[j].transId,"targetId":list[j].targetId,"targetType":list[j].targetType,"bidPrice":bidPrice,"adzoneId":adzoneId}];
-                    CPS.app.batchModifyMatrixPrice(matrixPrice);
-                }
-            });
+            },function(){self.html("网络错误,请刷新页面重试!");})
 
 
         });
+        $("#CPS_tools_container").show();
+
+    };
+
+    CPS.layout.adjust_i = function(){
+        $("#CPS_tools_container").hide();
+
+        var panel = "<div id='auto_adjust_i_div' class='row'>"+
+            "<table class='table'><tr><td>计划编号：</td><td><input type='text' name='campaignid' value=''/></td><td></td></tr>"+
+            "<tr><td>加大比率(%)：</td><td><input type='text' name='rate' value='10'/></td><td></td></tr>"+
+            "<tr><td><a class='CPS_bt' id='CPS_auto_adjust_i'>开始调整</a></td><td></td><td></td></tr>" +
+            "</table></div>";
+
+        $("#CPS_exector_msg").html("");
+
+        $("#CPS_tools_container .content .panel").html(panel);
+
+        //CPS.app.adzoneSelectHtml();
+
+        $("#CPS_auto_adjust_i").unbind();
+        $("#CPS_auto_adjust_i").one("click",function(){
+            var self = $(this);
+            self.html("正在处理,请稍候..");
+
+            var campaignid = $("#auto_adjust_i_div").find("input[name=campaignid]").val();
+            var rate =  parseInt($("#auto_adjust_i_div").find("input[name=rate]").val())/100;
+
+            CPS.app.findAdzoneList(campaignid,1,function(data){
+                var c = data.count;
+                CPS.time.start(c);
+                var pt = parseInt((c+39)/40);
+                for(var p =1;p<=pt;p++){
+                    CPS.app.modifyPriceByRate(campaignid,rate,p);
+                }
+
+            },function(){self.html("网络错误,请刷新页面重试!");})
+
+
+        });
+
+        $("#CPS_tools_container").show();
+
+    };
+
+    CPS.layout.adjust_d = function(){
+        $("#CPS_tools_container").hide();
+
+        var panel = "<div id='auto_adjust_d_div' class='row'>"+
+            "<table class='table'><tr><td>计划编号：</td><td><input type='text' name='campaignid' value=''/></td><td></td></tr>"+
+            "<tr><td>减少比率(%)：</td><td><input type='text' name='rate' value='10'/> </td><td></td></tr>"+
+            "<tr><td><a class='CPS_bt' id='CPS_auto_adjust_d'>开始调整</a></td><td></td><td></td></tr>" +
+            "</table></div>";
+
+        $("#CPS_exector_msg").html("");
+
+        $("#CPS_tools_container .content .panel").html(panel);
+
+        //CPS.app.adzoneSelectHtml();
+
+        $("#CPS_auto_adjust_d").unbind();
+        $("#CPS_auto_adjust_d").one("click",function(){
+            var self = $(this);
+            self.html("正在处理,请稍候..");
+
+            var campaignid = $("#auto_adjust_d_div").find("input[name=campaignid]").val();
+            var rate =  parseInt($("#auto_adjust_d_div").find("input[name=rate]").val())/100;
+            rate = 0-Math.abs(rate);
+            CPS.app.findAdzoneList(campaignid,1,function(data){
+                var c = data.count;
+                CPS.time.start(c);
+                var pt = parseInt((c+39)/40);
+                for(var p =1;p<=pt;p++){
+                    CPS.app.modifyPriceByRate(campaignid,rate,p);
+                }
+
+            },function(){self.html("网络错误,请刷新页面重试!");})
+
+
+        });
+
+        $("#CPS_tools_container").show();
 
     };
 
@@ -1807,7 +2178,7 @@
             "<select name='adzoneId'><option value='34502344,2'>PC_流量包_网上购物_淘宝首页焦点图(34502344)</option></select>"+
             "</p></td></tr>"+
             "<tr><td>出价：</td><td><input type='text' name='bidPrice' value='10'/></td><td></td></tr>"+
-            "<tr><td><a class='CPS_bt' id='CPS_adzone_btn' href='javascript:void(0)'>增加资源位</a></td><td></td><td></td></tr>" +
+            "<tr><td><a class='CPS_bt' id='CPS_adzone_btn' href='javascript:void(0)'>开始调整</a></td><td></td><td></td></tr>" +
             "</table></div>";
 
         $("#CPS_tools_container .content .panel").html(panel);
@@ -1843,7 +2214,7 @@
 
                 for(var i in transList) {
                     var trans = transList[i];
-                    CPS.app.targetAddAdzones(trans,adzoneId,type,bidPrice,function(){CPS.time.success()},function(){CPS.time.fail()});
+                    CPS.app.targetReplaceAdzone(trans,adzoneId,type,bidPrice,function(){CPS.time.success()},function(){CPS.time.fail()});
                 }
 
             });
@@ -1976,9 +2347,9 @@
             if(data.campaignid && data.campaignid>0){
                  panel = "<div id='batch_create' class='row'>"+
                     "<table class='table'><tr><td>计划编号：</td><td>"+data.campaignid+"</td></tr>"+
-                    "<tr><td><a class='CPS_bt'  id='CPS_auto_create'>批量推广</a></td><td></td></tr></table></div>";
+                    "<tr><td><a class='CPS_bt' href='http://cps.da-mai.com/zuanshi/setting/index2.html?nick="+CPS.app.nick+"' target='_blank'>重新设置</a></td><td><a class='CPS_bt'  id='CPS_auto_create'>开始推广</a></td></tr></table></div>";
             }else{
-                 panel = "<p>未获取到批量推广设置,请到精准平台进行设置.</p>";
+                 panel = "<p><a href='http://cps.da-mai.com/zuanshi/setting/index2.html?nick="+CPS.app.nick+"' target='_blank'>未获取到批量推广设置,马上去进行设置.</a></p>";
             }
             $("#CPS_tools_container .content .panel").html(panel);
             $("#CPS_tools_container").show();
@@ -2032,12 +2403,12 @@
 
     CPS.layout.menu = function(){
         var menuHtml = "<div id='CPS_layout_menu'><ul style='display: none'>"+
-            "<li><a href='javascript:void(0)' data-target='CPS_layout_create'>批量推广</a></li>"+
-            "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust'>批量调价</a></li>"+
-            "<li><a href='javascript:void(0)' data-target='CPS_layout_add_ad'>批量添加资源位</a></li>"+
-            "<li><a href='javascript:void(0)' data-target='CPS_layout_del_ad'>批量删除资源位</a></li>"+
-            "<li><a href='javascript:void(0)' data-target='CPS_layout_adboard'>批量替换创意</a></li>"+
-            //"<li><a href='javascript:void(0)' data-target='CPS_layout_update'>更新资源位</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_create'>批量推广...</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust'>统一出价...</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust_i'>加大投放...</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_adjust_d'>减少投放...</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_adzone'>替换资源位...</a></li>"+
+            "<li><a href='javascript:void(0)' data-target='CPS_layout_adboard'>替换创意...</a></li>"+
             "</ul><div id='CPS_layout_icon'><div class='img_box'><i class='icon'></i></div></div></div>";
         $("body").append(menuHtml);
         $("#CPS_layout_icon").click(function(){
@@ -2052,13 +2423,21 @@
             CPS.layout.adjust();
         });
 
-        $("#CPS_layout_menu a[data-target='CPS_layout_add_ad']").click(function(){
-            CPS.layout.addadzone();
+        $("#CPS_layout_menu a[data-target='CPS_layout_adjust_i']").click(function(){
+            CPS.layout.adjust_i();
         });
 
-        $("#CPS_layout_menu a[data-target='CPS_layout_del_ad']").click(function(){
-            CPS.layout.deladzone();
+        $("#CPS_layout_menu a[data-target='CPS_layout_adjust_d']").click(function(){
+            CPS.layout.adjust_d();
         });
+
+        $("#CPS_layout_menu a[data-target='CPS_layout_adzone']").click(function(){
+            CPS.layout.addadzone();
+        });
+        //
+        //$("#CPS_layout_menu a[data-target='CPS_layout_del_ad']").click(function(){
+        //    CPS.layout.deladzone();
+        //});
 
         $("#CPS_layout_menu a[data-target='CPS_layout_adboard']").click(function(){
             CPS.layout.adboard();
