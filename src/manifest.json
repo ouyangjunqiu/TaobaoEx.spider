@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "version": "3.2.0",
+    "version": "3.2.1",
     "name": "精准投放平台操作助手",
     "description": "直通车、钻石展位浏览器快捷操作助手.",
     "background": {

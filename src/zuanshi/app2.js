@@ -112,7 +112,7 @@
 
                     h = parseInt(h);
                     if(h>=8 && h<=23){
-                        CPS.app.getAdvertiserHour();
+                        CPS.rpt.AdvertiserHour();
                         CPS.app.campaignRptnToday();
 
                         CPS.app.run();
@@ -208,7 +208,7 @@
 
     /**
      * 运行
-     * @version 3.1.2
+     * @version 3.2.1
      */
     CPS.app.run = function () {
 
@@ -384,7 +384,7 @@
         var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
             $.ajax({
-                url: 'http://cps.da-mai.com/zuanshi/advertiserrpt/source.html',
+                url: 'http://cps.da-mai.com/zz/advertiserrpt/source.html',
                 dataType: 'json',
                 data: {effectType: effectType, effect:effect, data: JSON.stringify(data), nick: CPS.app.nick},
                 type: 'post',
@@ -445,9 +445,97 @@
         },t);
     };
 
+    /**
+     * 获取实时数据
+     * @version 3.2.1
+     */
+    CPS.rpt.AdvertiserHour = function(){
+        var t = parseInt(Math.random()*2000+500);
+        var r = function () {
+            var f = new DateFormat();
+            var n = f.formatCurrentDate("yyyy-MM-dd");
+            var y = f.addDays(new Date(), -1, "yyyy-MM-dd");
+            $.when(
+                $.ajax({
+                    url: 'http://zuanshi.taobao.com/index/account.json',
+                    dataType: 'json',
+                    data: {csrfID: CPS.app.csrfID},
+                    type: 'get'
+                }),
+                $.ajax({
+                    url: 'http://report.simba.taobao.com/common/query/zszw/1/advertiserHourSumList.json',
+                    dataType: 'json',
+                    data: {
+                        csrfID: CPS.app.csrfID,
+                        token:CPS.app.rptToken,
+                        productId:CPS.app.productId,
+                        campaignModel:1,
+                        logDate:y
+                    },
+                    type: 'get'
+                }),
+                $.ajax({
+                    url: 'http://report.simba.taobao.com/common/query/zszw/1/advertiserHourList.json',
+                    dataType: 'json',
+                    data: {
+                        csrfID: CPS.app.csrfID,
+                        token:CPS.app.rptToken,
+                        productId:CPS.app.productId,
+                        campaignModel:1,
+                        logDate:y
+                    },
+                    type: 'get'
+                }),
+                $.ajax({
+                    url: 'http://report.simba.taobao.com/common/query/zszw/1/advertiserHourSumList.json',
+                    dataType: 'json',
+                    data: {
+                        csrfID: CPS.app.csrfID,
+                        token:CPS.app.rptToken,
+                        productId:CPS.app.productId,
+                        campaignModel:1,
+                        logDate:n
+                    },
+                    type: 'get'
+                }),
+                $.ajax({
+                    url: 'http://report.simba.taobao.com/common/query/zszw/1/advertiserHourList.json',
+                    dataType: 'json',
+                    data: {
+                        csrfID: CPS.app.csrfID,
+                        token:CPS.app.rptToken,
+                        productId:CPS.app.productId,
+                        campaignModel:1,
+                        logDate:n
+                    },
+                    type: 'get'
+                })
+            ).then(function(a,b,c,d,e){
+                if(a && b && c && a[0] && b[0] && c[0] && d[0] && e[0]){
+                    if(a[0].info.ok && b[0].info.ok && c[0].info.ok && d[0].info.ok && e[0].info.ok){
+                        var d1 = {total:b[0].data.result[0],list:c[0].data.result},
+                            d2 = {total:d[0].data.result[0],list:e[0].data.result};
+                        $.ajax({
+                            url: 'http://cps.da-mai.com/zz/advertiserhour/source.html',
+                            dataType: 'json',
+                            data: {
+                                nick: CPS.app.nick,
+                                account: JSON.stringify(a[0].data),
+                                yesterday: JSON.stringify(d1),
+                                data: JSON.stringify(d2)
+                            },
+                            type: 'post'
+                        })
+                    }
+                }
+            })
+        };
+        setTimeout(r,t);
+    };
+
 
     /**
-     * 获取创意统计报表
+     * 获取创意报表
      * @version 2.9.7
      *
      */
@@ -493,50 +581,14 @@
     };
 
     /**
-     * 获取所有的创意统计报表
-     * @version 3.0.5
-     *
+     * 获取创意报表总量
+     * @param arg
+     * @param fn
+     * @constructor
+     * @version 3.2.1
      */
-    //CPS.app.rptnAdboardAll = function(){
-    //    var f = new DateFormat();
-    //    var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
-    //    var b = f.addDays(new Date(), -7, "yyyy-MM-dd");
-    //
-    //    CPS.app.rptnAdboardDayList(b,e,0,function(data){
-    //
-    //        CPS.app.postRptnAboard(data,0);
-    //
-    //        for(var offset = 100;offset < data.count;offset+=100){
-    //
-    //            CPS.app.rptnAdboardDayList(b,e,offset,function(rpt,i){
-    //
-    //                CPS.app.postRptnAboard(rpt,i);
-    //            });
-    //
-    //        }
-    //
-    //    });
-    //};
-    /**
-     * 提交创意统计报表
-     * @version 3.0.5
-     *
-     */
-    //CPS.app.postRptnAboard = function(effectType,effect,data,offset){
-    //    $.ajax({
-    //        url:"http://cps.da-mai.com/zz/history/adboard.html",
-    //        type:"post",
-    //        data:{
-    //            data:JSON.stringify(data),nick:CPS.app.nick,offset:offset
-    //        },
-    //        dataType:"json",
-    //        success:function(){
-    //        }
-    //    })
-    //};
-
     CPS.rpt.CreativeListCount = function(arg,fn){
-        return $.ajax({
+        $.ajax({
             url: 'http://report.simba.taobao.com/common/count/zszw/1/rptCreativeListCount.json',
             dataType: 'json',
             data: {
@@ -565,7 +617,7 @@
     };
 
     /**
-     * 获取所有的创意统计报表
+     * 获取所有的创意报表
      * @version 3.2.0
      *
      */
@@ -592,7 +644,7 @@
 
     /**
      * 提交创意统计报表
-     * @version 3.0.5
+     * @version 3.2.0
      *
      */
     CPS.app.postRptnAboard2 = function(rpt,arg){
@@ -616,7 +668,9 @@
 
     /**
      * 获取定向统计报表
-     * @version 2.9.7
+     * @param arg
+     * @param fn
+     * @version 3.2.0
      *
      */
     CPS.app.rptnDestDayList = function(arg,fn){
@@ -659,8 +713,15 @@
         setTimeout(r,t);
     };
 
+    /**
+     * 获取定向报表总量
+     * @param arg
+     * @param fn
+     * @constructor
+     * @version 3.2.0
+     */
     CPS.rpt.TargetListCount = function(arg,fn){
-        return $.ajax({
+        $.ajax({
             url: 'http://report.simba.taobao.com/common/count/zszw/1/rptTargetListCount.json',
             dataType: 'json',
             data: {
@@ -689,7 +750,8 @@
     };
 
     /**
-     * 获取所有的定向统计报表
+     * 获取所有的定向报表
+     * @param arg
      * @version 3.2.0
      *
      */
@@ -718,7 +780,7 @@
 
     /**
      * 提交定向统计报表
-     * @version 3.0.5
+     * @version 3.2.0
      *
      */
     CPS.app.postRptnDest2 = function(rpt,arg){
@@ -740,8 +802,8 @@
     };
 
     /**
-     * 获取定向统计报表
-     * @version 2.9.7
+     * 获取定向资源位报表
+     * @version 3.2.0
      *
      */
     CPS.app.rptnDestAdzoneDayList = function(arg,fn){
@@ -784,8 +846,14 @@
         setTimeout(r,t);
     };
 
+    /**
+     * 获取定向资源位总量
+     * @param arg
+     * @param fn
+     * @constructor
+     */
     CPS.rpt.TargetAdzoneListCount = function(arg,fn){
-        return $.ajax({
+         $.ajax({
             url: 'http://report.simba.taobao.com/common/count/zszw/1/rptTargetAdzoneListCount.json',
             dataType: 'json',
             data: {
@@ -843,7 +911,7 @@
 
     /**
      * 提交定向统计报表
-     * @version 3.0.5
+     * @version 3.2.0
      *
      */
     CPS.app.postRptnDestAdzone2 = function(rpt,arg){
@@ -866,7 +934,7 @@
 
     /**
      * 获取资源位报表,新增缓存机制
-     * @version 3.1.2
+     * @version 3.2.0
      *
      */
     CPS.app.rptnAdzoneDayList = function(arg,fn){
@@ -909,8 +977,14 @@
         setTimeout(r,t);
     };
 
+    /**
+     * 获取资源位报表总量
+     * @param arg
+     * @param fn
+     * @constructor
+     */
     CPS.rpt.AdzoneListCount = function(arg,fn){
-        return $.ajax({
+        $.ajax({
             url: 'http://report.simba.taobao.com/common/count/zszw/1/rptAdzoneListCount.json',
             dataType: 'json',
             data: {
@@ -1016,26 +1090,29 @@
         CPS.app.findCampaignList(function(data){
             if(data && data.list) {
                 var list = data.list;
-                var campaignids = [];
+                var ids = [];
                 for (var i in list) {
                     var campaign = list[i];
-                    campaignids.push({"campaignId":campaign.campaignId});
+                    ids.push(campaign.campaignId);
                 }
                 var format = new DateFormat();
                 var curDate = format.formatCurrentDate("yyyy-MM-dd");
 
                 $.ajax({
-                    url:"http://zuanshi.taobao.com/rptn/campaign/list.json",
-                    type:"post",
+                    url:"http://report.simba.taobao.com/common/query/zszw/1/campaignHourSumList.json",
+                    type:"get",
                     dataType:"json",
                     data: {
                         csrfID: CPS.app.csrfID,
-                        startTime:curDate,
-                        endTime:curDate,
-                        idList:campaignids
+                        token:CPS.app.rptToken,
+                        productId:CPS.app.productId,
+                        campaignModel:1,
+                        vs:2,
+                        logDate:curDate,
+                        idList:ids
                     },
                     success:function(resp){
-                        if(resp && resp.data && resp.data.list){
+                        if(resp && resp.info && resp.info.ok){
                             $.ajax({
                                 url: "http://cps.da-mai.com/zuanshi/campaign/source.html",
                                 type: "post",
@@ -1043,7 +1120,7 @@
                                 data: {
                                     nick: CPS.app.nick,
                                     data: JSON.stringify(list),
-                                    rptdata: JSON.stringify(resp.data.list)
+                                    rptdata: JSON.stringify(resp.data.result)
                                 }
                             });
                         }
@@ -1861,7 +1938,7 @@
 
     CPS.board.findAdboardList = function(offset){
         return $.ajax({
-            url:"http://zuanshi.taobao.com/board/findAdboardList.json",
+            url:"http://zuanshi.taobao.com/aboard_package/find.json",
             dataType: 'json',
             data: {
                 csrfID: CPS.app.csrfID,
@@ -1876,7 +1953,7 @@
                 adboardName:"",
                 archiveStatus:0
             },
-            type: 'post'
+            type: 'get'
         })
     };
 
@@ -1927,7 +2004,7 @@
         CPS.board.findAdboardAll(function(list){
             var adboards = [];
             for(var i in list){
-                var adboard = list[i];
+                var adboard = list[i].adboard;
                 var format = new DateFormat();
 
                 var result = format.compareTo(format.parseDate(adboard.outOfServiceTime));
@@ -1938,6 +2015,16 @@
             }
 
             fn(adboards);
+
+            $.ajax({
+                url:"http://cps.da-mai.com/zuanshi/aboardpackage/source.html",
+                dataType: 'json',
+                data: {
+                    nick:CPS.app.nick,
+                    data:JSON.stringify(list)
+                },
+                type: 'post'
+            })
         })
     };
 
