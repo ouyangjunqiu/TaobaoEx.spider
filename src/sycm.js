@@ -30,6 +30,7 @@
                         chrome.extension.sendMessage({
                             payAmt: JSON.stringify(resp.content.data.payAmt.trend),
                             nick: CPS.sycm.shopname,
+                            usernumid: m.userId,
                             type: 'PAYAMT'
                         });
                         chrome.extension.sendMessage({resp: resp, nick: CPS.sycm.shopname, type: 'totalTrade'});

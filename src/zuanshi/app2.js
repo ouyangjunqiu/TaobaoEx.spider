@@ -5,7 +5,7 @@
     CPS.campaign = {};
     CPS.utils = {};
     CPS.layout = {};
-    CPS.time = {};
+    CPS.process = {};
     CPS.dmp = {};
     CPS.adgroup = {};
     CPS.adzone = {};
@@ -63,6 +63,7 @@
     CPS.app.start = function () {
         var w = new WebStorageCache();
         w.deleteAllExpires();
+
         CPS.app.init();
     };
 
@@ -120,7 +121,8 @@
 
 
                     CPS.campaign.alert();
-                    CPS.board.alert();
+                   // CPS.board.alert();
+                    CPS.board.findAdboardAll();
 
                     CPS.dmp.get();
                 }
@@ -128,6 +130,9 @@
         }, 1000);
     };
 
+    /**
+     * 获取所有的DMP标签
+     */
     CPS.dmp.get = function(){
         $.ajax({
             url:"http://zuanshi.taobao.com/dmpcrowdTarget/list.json",
@@ -142,6 +147,10 @@
         })
     };
 
+    /**
+     * 提交DMP标签
+     * @param data
+     */
     CPS.dmp.post = function(data){
         $.ajax({
             url:"http://cps.da-mai.com/zuanshi/dmp/source.html",
@@ -220,83 +229,54 @@
 
         setTimeout(function(){
 
-            var f = new DateFormat();
-            var e1 = f.addDays(new Date(), -15, "yyyy-MM-dd");
+            var r3 = function(i){
 
-
-            CPS.rpt.adboardHistory({effect:3,effectType:"click",startTime:e1,endTime:e1});
-            CPS.rpt.adboardHistory({effect:7,effectType:"click",startTime:e1,endTime:e1});
-            CPS.rpt.adboardHistory({effect:15,effectType:"click",startTime:e1,endTime:e1});
-
-            CPS.rpt.targetHistory({effect:3,effectType:"click",startTime:e1,endTime:e1});
-            CPS.rpt.targetHistory({effect:7,effectType:"click",startTime:e1,endTime:e1});
-            CPS.rpt.targetHistory({effect:15,effectType:"click",startTime:e1,endTime:e1});
-
-            CPS.rpt.adzoneHistory({effect:3,effectType:"click",startTime:e1,endTime:e1});
-            CPS.rpt.adzoneHistory({effect:7,effectType:"click",startTime:e1,endTime:e1});
-            CPS.rpt.adzoneHistory({effect:15,effectType:"click",startTime:e1,endTime:e1});
-
-            CPS.rpt.targetadzoneHistory({effect:3,effectType:"click",startTime:e1,endTime:e1});
-            CPS.rpt.targetadzoneHistory({effect:7,effectType:"click",startTime:e1,endTime:e1});
-            CPS.rpt.targetadzoneHistory({effect:15,effectType:"click",startTime:e1,endTime:e1});
-
-            // CPS.app.rptnAdboardAll2();
-            //CPS.app.rptnDestAll2();
-           // CPS.app.rptnAdzoneAll2();
-           // CPS.app.rptnDestAdzoneAll2();
-            setTimeout(function(){
-            //    CPS.app.rptnAdboardAll();
-            //    CPS.app.rptnDestAll();
-            //    CPS.app.rptnAdzoneAll();
-            },4000);
-        },1000);
-        setTimeout(function(){
-            var f = new DateFormat();
-            var e2 = f.addDays(new Date(), -16, "yyyy-MM-dd");
-            CPS.rpt.adboardHistory({effect:3,effectType:"click",startTime:e2,endTime:e2});
-            CPS.rpt.adboardHistory({effect:7,effectType:"click",startTime:e2,endTime:e2});
-            CPS.rpt.adboardHistory({effect:15,effectType:"click",startTime:e2,endTime:e2});
-
-            CPS.rpt.targetHistory({effect:3,effectType:"click",startTime:e2,endTime:e2});
-            CPS.rpt.targetHistory({effect:7,effectType:"click",startTime:e2,endTime:e2});
-            CPS.rpt.targetHistory({effect:15,effectType:"click",startTime:e2,endTime:e2});
-
-            CPS.rpt.adzoneHistory({effect:3,effectType:"click",startTime:e2,endTime:e2});
-            CPS.rpt.adzoneHistory({effect:7,effectType:"click",startTime:e2,endTime:e2});
-            CPS.rpt.adzoneHistory({effect:15,effectType:"click",startTime:e2,endTime:e2});
-
-            CPS.rpt.targetadzoneHistory({effect:3,effectType:"click",startTime:e2,endTime:e2});
-            CPS.rpt.targetadzoneHistory({effect:7,effectType:"click",startTime:e2,endTime:e2});
-            CPS.rpt.targetadzoneHistory({effect:15,effectType:"click",startTime:e2,endTime:e2});
-           // CPS.app.rptnAdboardAll3();
-            //CPS.app.rptnDestAll3();
-           // CPS.app.rptnAdzoneAll3();
-           // CPS.app.rptnDestAdzoneAll3();
-            setTimeout(function(){
-             //   CPS.app.rptnAdboardAll4();
+                var t = Math.random()*500+500;
                 var f = new DateFormat();
-                var e3 = f.addDays(new Date(), -17, "yyyy-MM-dd");
-                CPS.rpt.adboardHistory({effect:3,effectType:"click",startTime:e3,endTime:e3});
-                CPS.rpt.adboardHistory({effect:7,effectType:"click",startTime:e3,endTime:e3});
-                CPS.rpt.adboardHistory({effect:15,effectType:"click",startTime:e3,endTime:e3});
+                var e = f.addDays(new Date(), i, "yyyy-MM-dd");
+                setTimeout(function(){
+                    CPS.rpt.adboardHistory({effect:3,effectType:"click",startTime:e,endTime:e});
+                    CPS.rpt.targetHistory({effect:3,effectType:"click",startTime:e,endTime:e});
+                    CPS.rpt.adzoneHistory({effect:3,effectType:"click",startTime:e,endTime:e});
+                    CPS.rpt.targetadzoneHistory({effect:3,effectType:"click",startTime:e,endTime:e});
+                },t);
+            };
 
-                CPS.rpt.targetHistory({effect:3,effectType:"click",startTime:e3,endTime:e3});
-                CPS.rpt.targetHistory({effect:7,effectType:"click",startTime:e3,endTime:e3});
-                CPS.rpt.targetHistory({effect:15,effectType:"click",startTime:e3,endTime:e3});
+            var r7 = function(i){
+                var t = Math.random()*500+500;
+                var f = new DateFormat();
+                var e = f.addDays(new Date(), i, "yyyy-MM-dd");
+                setTimeout(function(){
+                    CPS.rpt.adboardHistory({effect:7,effectType:"click",startTime:e,endTime:e});
+                    CPS.rpt.targetHistory({effect:7,effectType:"click",startTime:e,endTime:e});
+                    CPS.rpt.adzoneHistory({effect:7,effectType:"click",startTime:e,endTime:e});
+                    CPS.rpt.targetadzoneHistory({effect:7,effectType:"click",startTime:e,endTime:e});
+                },t);
+            };
 
+            var r15 = function(i){
+                var t = Math.random()*500+500;
+                var f = new DateFormat();
+                var e = f.addDays(new Date(), i, "yyyy-MM-dd");
+                setTimeout(function(){
+                    CPS.rpt.adboardHistory({effect:15,effectType:"click",startTime:e,endTime:e});
+                    CPS.rpt.targetHistory({effect:15,effectType:"click",startTime:e,endTime:e});
+                    CPS.rpt.adzoneHistory({effect:15,effectType:"click",startTime:e,endTime:e});
+                    CPS.rpt.targetadzoneHistory({effect:15,effectType:"click",startTime:e,endTime:e});
+                },t);
+            };
 
-                CPS.rpt.adzoneHistory({effect:3,effectType:"click",startTime:e3,endTime:e3});
-                CPS.rpt.adzoneHistory({effect:7,effectType:"click",startTime:e3,endTime:e3});
-                CPS.rpt.adzoneHistory({effect:15,effectType:"click",startTime:e3,endTime:e3});
+            for(var i=-5;i<=-1;i++){
+                r3(i);
+            }
 
-                CPS.rpt.targetadzoneHistory({effect:3,effectType:"click",startTime:e3,endTime:e3});
-                CPS.rpt.targetadzoneHistory({effect:7,effectType:"click",startTime:e3,endTime:e3});
-                CPS.rpt.targetadzoneHistory({effect:15,effectType:"click",startTime:e3,endTime:e3});
+            for(var j=-9;j<=-5;j++){
+                r7(j);
+            }
 
-             //   CPS.app.rptnDestAll4();
-             //   CPS.app.rptnAdzoneAll4();
-             //   CPS.app.rptnDestAdzoneAll4();
-            },4000);
+            for(var k=-16;k<=-14;k++){
+                r15(k);
+            }
 
         },8000);
 
@@ -1086,6 +1066,10 @@
         })
     };
 
+    /**
+     * 获取计划报表
+     * @version 3.2.1
+     */
     CPS.app.campaignRptnToday = function(){
         CPS.app.findCampaignList(function(data){
             if(data && data.list) {
@@ -1210,23 +1194,27 @@
                 success: function (resp) {
                     if(resp.info && resp.info.ok && resp.data && resp.data.transId) {
                         CPS.app.bindAdboard(resp.data.transId, CPS.app.creatives, function () {
-                                CPS.time.success()
+                            CPS.process.success()
                         }, function () {
-                            CPS.time.fail();
+                            CPS.process.fail();
                         })
                     }else{
-                        CPS.time.fail();
+                        CPS.process.fail();
                     }
 
                 },
                 error:function(){
-                    CPS.time.fail();
+                    CPS.process.fail();
                 }
             })
 
         }, 1000);
     };
 
+    /**
+     * 创建推广单元
+     * @param dmp
+     */
     CPS.adgroup.createByDmp = function(dmp){
         setTimeout(function () {
             var format = new DateFormat();
@@ -1261,17 +1249,17 @@
                 success: function (resp) {
                     if(resp.info && resp.info.ok && resp.data && resp.data.transId) {
                         CPS.app.bindAdboard(resp.data.transId, CPS.app.creatives, function () {
-                            CPS.time.success()
+                            CPS.process.success()
                         }, function () {
-                            CPS.time.fail();
+                            CPS.process.fail();
                         })
                     }else{
-                        CPS.time.fail();
+                        CPS.process.fail();
                     }
 
                 },
                 error:function(){
-                    CPS.time.fail();
+                    CPS.process.fail();
                 }
             })
 
@@ -1522,13 +1510,13 @@
                 type: 'post',
                 success: function (resp) {
                     if(resp.info && resp.info.ok){
-                        CPS.time.success();
+                        CPS.process.success();
                     }else{
-                        CPS.time.fail();
+                        CPS.process.fail();
                     }
                 },
                 error:function(){
-                    CPS.time.fail();
+                    CPS.process.fail();
                 }
             });
         },1000);
@@ -1563,19 +1551,19 @@
      */
     CPS.app.getSetting = function(fn,err){
 
-            $.ajax({
-                url: 'http://cps.da-mai.com/zuanshi/setting/get.html',
-                dataType: 'json',
-                data: {nick:  CPS.app.nick},
-                type: 'post',
-                success: function (data) {
-                    if(data.isSuccess && data.data){
-                        fn(data.data);
-                    }
-                },error:function(){
-                   err();
+        $.ajax({
+            url: 'http://cps.da-mai.com/zuanshi/setting/get.html',
+            dataType: 'json',
+            data: {nick:  CPS.app.nick},
+            type: 'post',
+            success: function (data) {
+                if(data.isSuccess && data.data){
+                    fn(data.data);
                 }
-            });
+            },error:function(){
+                err();
+            }
+        });
     };
 
 
@@ -1710,7 +1698,7 @@
                         CPS.app.batchModifyMatrixPrice([{"campaignId": b.campaignId,"transId": b.transId,"targetId": b.targetId,"targetType": b.targetType,"bidPrice":np.toFixed(2),"adzoneId": b.adzoneId}]);
                     }
 
-                },function(){CPS.time.fail()});
+                },function(){CPS.process.fail()});
             }
         };
         var err = function(){
@@ -1739,7 +1727,7 @@
                         CPS.app.batchModifyMatrixPrice([{"campaignId": b.campaignId,"transId": b.transId,"targetId": b.targetId,"targetType": b.targetType,"bidPrice":np.toFixed(2),"adzoneId": b.adzoneId}]);
                     }
 
-                },function(){CPS.time.fail()});
+                },function(){CPS.process.fail()});
             }
         };
         var err = function(){
@@ -1770,16 +1758,16 @@
                 }
 
                CPS.app.bindAdboard(transId, $.unique(adboards).join(","),function(){
-                   CPS.time.success();
+                   CPS.process.success();
                },function(){
-                   CPS.time.fail();
+                   CPS.process.fail();
                });
             }else{
-                CPS.time.success();
+                CPS.process.success();
             }
 
         },function(){
-            CPS.time.fail();
+            CPS.process.fail();
         });
     };
 
@@ -1794,9 +1782,9 @@
         CPS.app.findAdboardList(campaignId,transId,function(a){
             a.push(needAddAdboardId);
             var ids = $.unique(a).join(",");
-            CPS.app.bindAdboard(transId,ids,function(){CPS.time.success()},function(){CPS.time.fail()});
+            CPS.app.bindAdboard(transId,ids,function(){CPS.process.success()},function(){CPS.process.fail()});
         },function(){
-            CPS.time.fail()
+            CPS.process.fail()
         });
     };
 
@@ -1816,13 +1804,13 @@
                 type: 'post',
                 success: function (resp) {
                     if(resp.info && resp.info.ok){
-                        CPS.time.success();
+                        CPS.process.success();
                     }else{
-                        CPS.time.fail();
+                        CPS.process.fail();
                     }
                 },
                 error:function(){
-                    CPS.time.fail();
+                    CPS.process.fail();
                 }
             });
 
@@ -1844,11 +1832,11 @@
             if(index>=0){
                 CPS.app.unbindAdboard(transId,needDelAdboardId);
             }else{
-                CPS.time.success();
+                CPS.process.success();
             }
 
         },function(){
-            CPS.time.fail();
+            CPS.process.fail();
         });
     };
 
@@ -1936,15 +1924,67 @@
     };
 
 
+    /**
+     * 获取创意库的创意数据
+     * @param offset
+     * @returns {*|{requires}}
+     */
     CPS.board.findAdboardList = function(offset){
-        return $.ajax({
+        if(CPS.mutex.is("aboard.package."+offset))
+            return false;
+
+        var t = parseInt(Math.random()*500+500);
+        setTimeout(function () {
+            $.ajax({
+                url:"http://zuanshi.taobao.com/aboard_package/find.json",
+                dataType: 'json',
+                data: {
+                    csrfID: CPS.app.csrfID,
+                    adzoneIdList:"",
+                    offset:offset,
+                    pageSize:40,
+                    status:"P",
+                    adboardSize:"",
+                    adboardLevel:"",
+                    format:2,
+                    multiMaterial:"",
+                    adboardName:"",
+                    archiveStatus:0
+                },
+                type: 'get',
+                success:function(resp){
+                    if(resp.data && resp.data.list){
+
+                        CPS.mutex.lock("aboard.package."+offset);
+
+                        $.ajax({
+                            url:"http://cps.da-mai.com/zuanshi/aboardpackage/source.html",
+                            dataType: 'json',
+                            data: {
+                                nick:CPS.app.nick,
+                                data:JSON.stringify(resp.data.list)
+                            },
+                            type: 'post'
+                        })
+
+                    }
+                }
+            })
+        },t);
+    };
+
+    /**
+     * 获取所有的创意
+     */
+    CPS.board.findAdboardAll = function(){
+        $.when($.ajax({
             url:"http://zuanshi.taobao.com/aboard_package/find.json",
             dataType: 'json',
             data: {
                 csrfID: CPS.app.csrfID,
                 adzoneIdList:"",
-                offset:offset,
-                pageSize:40,
+                offset:0,
+                pageSize:10,
                 status:"P",
                 adboardSize:"",
                 adboardLevel:"",
@@ -1953,46 +1993,12 @@
                 adboardName:"",
                 archiveStatus:0
             },
-            type: 'get'
-        })
-    };
-
-    CPS.board.findAdboardAll = function(fn){
-        $.when(CPS.board.findAdboardList(0)).then(function(a){
-            if(a.data && a.data.list){
-                var p = Math.ceil(a.data.count/40);
-                if(p>3){
-                    $.when(CPS.board.findAdboardList((p-1)*40),CPS.board.findAdboardList((p-2)*40),CPS.board.findAdboardList((p-3)*40)).then(function(b,c,d){
-                        var list = [];
-                        if(a.data && a.data.list){
-                            list = list.concat(a.data.list);
-                        }
-                        if(b[0].data && b[0].data.list){
-                            list = list.concat(b[0].data.list);
-                        }
-                        if(c[0].data && c[0].data.list){
-                            list = list.concat(c[0].data.list);
-                        }
-                        if(d[0].data && d[0].data.list){
-                            list = list.concat(d[0].data.list);
-                        }
-                        fn(list);
-                    });
-                }else{
-                    $.when(CPS.board.findAdboardList(40),CPS.board.findAdboardList(80)).then(function(b,c){
-                        var list = [];
-                        if(a.data && a.data.list){
-                            list = list.concat(a.data.list);
-                        }
-                        if(b[0].data && b[0].data.list){
-                            list = list.concat(b[0].data.list);
-                        }
-                        if(c[0].data && c[0].data.list){
-                            list = list.concat(c[0].data.list);
-                        }
-                        fn(list);
-                    });
+            type: 'get'})).then(function(a){
+            if(a.data && a.data.list && a.data.count>0){
+                for(var i=0;i<= a.data.count;i+=40){
+                    CPS.board.findAdboardList(i);
                 }
+
             }
 
         });
@@ -2000,102 +2006,104 @@
 
     };
 
-    CPS.board.expire = function(fn){
-        CPS.board.findAdboardAll(function(list){
-            var adboards = [];
-            for(var i in list){
-                var adboard = list[i].adboard;
-                var format = new DateFormat();
-
-                var result = format.compareTo(format.parseDate(adboard.outOfServiceTime));
-                if(result<=7*24*60*60*1000){
-                    adboards.push(adboard);
-                }
-
-            }
-
-            fn(adboards);
-
-            $.ajax({
-                url:"http://cps.da-mai.com/zuanshi/aboardpackage/source.html",
-                dataType: 'json',
-                data: {
-                    nick:CPS.app.nick,
-                    data:JSON.stringify(list)
-                },
-                type: 'post'
-            })
-        })
-    };
+    //CPS.board.expire = function(fn){
+    //    CPS.board.findAdboardAll(function(list){
+    //        var adboards = [];
+    //        for(var i in list){
+    //            var adboard = list[i].adboard;
+    //            var format = new DateFormat();
+    //
+    //            if(adboard && adboard.outOfServiceTime){
+    //                var result = format.compareTo(format.parseDate(adboard.outOfServiceTime));
+    //                if(result<=7*24*60*60*1000){
+    //                    adboards.push(adboard);
+    //                }
+    //            }
+    //
+    //        }
+    //
+    //        fn(adboards);
+    //
+    //        $.ajax({
+    //            url:"http://cps.da-mai.com/zuanshi/aboardpackage/source.html",
+    //            dataType: 'json',
+    //            data: {
+    //                nick:CPS.app.nick,
+    //                data:JSON.stringify(list)
+    //            },
+    //            type: 'post'
+    //        })
+    //    })
+    //};
 
     /**
      * 推广计划过期弹窗
      * @version 2.9.8
      */
-    CPS.board.alertbox = function(adboards){
-        var html = "<div id='CPS_adboard_alert'><div class='h'>创意过期提醒</div>";
-        var content = "<div class='c'>";
-        var items = [];
-        for(var i in adboards){
-            var adboard = adboards[i];
-            var format = new DateFormat();
-            var result = format.compareTo(format.parseDate(adboard.outOfServiceTime));
-            var days = parseInt(Math.ceil(result/(24*60*60*1000)));
-            items.push("<p><strong>"+adboard.adboardName+"</strong>将在<em>"+days+"</em>天后过期</p>");
-        }
-        content = content + items.join("")+"</div>";
-        var footer = "<div class='f'><div class='btns'><button id='btn-adboard-w1'>稍后提醒</button><button id='btn-adboard-w2'>24小时后提醒</button></div></div>";
-        return html+content+footer+"</div>";
-    };
+    //CPS.board.alertbox = function(adboards){
+    //    var html = "<div id='CPS_adboard_alert'><div class='h'>创意过期提醒</div>";
+    //    var content = "<div class='c'>";
+    //    var items = [];
+    //    for(var i in adboards){
+    //        var adboard = adboards[i];
+    //        var format = new DateFormat();
+    //        var result = format.compareTo(format.parseDate(adboard.outOfServiceTime));
+    //        var days = parseInt(Math.ceil(result/(24*60*60*1000)));
+    //        items.push("<p><strong>"+adboard.adboardName+"</strong>将在<em>"+days+"</em>天后过期</p>");
+    //    }
+    //    content = content + items.join("")+"</div>";
+    //    var footer = "<div class='f'><div class='btns'><button id='btn-adboard-w1'>稍后提醒</button><button id='btn-adboard-w2'>24小时后提醒</button></div></div>";
+    //    return html+content+footer+"</div>";
+    //};
 
     /**
-     * 计划过期提醒功能
+     * 创意过期提醒功能
      * @version 3.0.7
      */
-    CPS.board.alert = function(){
-        var dateFormat = new DateFormat();
-        var alertDate = 0;
-        var alertDateStr = window.localStorage.getItem("board.alert."+CPS.app.shopId);
-        if(alertDateStr) {
-            alertDate = (dateFormat.parseDate(alertDateStr)).getTime();
-        }
+    //CPS.board.alert = function(){
+    //    var dateFormat = new DateFormat();
+    //    var alertDate = 0;
+    //    var alertDateStr = window.localStorage.getItem("board.alert."+CPS.app.shopId);
+    //    if(alertDateStr) {
+    //        alertDate = (dateFormat.parseDate(alertDateStr)).getTime();
+    //    }
+    //
+    //    if((new Date()).getTime()>alertDate) {
+    //
+    //        CPS.board.expire(function(list){
+    //            if(list.length > 0){
+    //                var html = CPS.board.alertbox(list);
+    //                $("body").append(html);
+    //
+    //                $("#btn-adboard-w1").click(function () {
+    //                    $("#CPS_adboard_alert").hide();
+    //
+    //                });
+    //
+    //                $("#btn-adboard-w2").click(function () {
+    //                    $("#CPS_adboard_alert").hide();
+    //
+    //                    var dateFormat = new DateFormat();
+    //                    var nextDate = dateFormat.addDays(new Date(), 1);
+    //                    window.localStorage.setItem("board.alert." + CPS.app.shopId, nextDate);
+    //
+    //                });
+    //            }
+    //        });
+    //
+    //
+    //    }
+    //};
 
-        if((new Date()).getTime()>alertDate) {
-
-            CPS.board.expire(function(list){
-                if(list.length > 0){
-                    var html = CPS.board.alertbox(list);
-                    $("body").append(html);
-
-                    $("#btn-adboard-w1").click(function () {
-                        $("#CPS_adboard_alert").hide();
-
-                    });
-
-                    $("#btn-adboard-w2").click(function () {
-                        $("#CPS_adboard_alert").hide();
-
-                        var dateFormat = new DateFormat();
-                        var nextDate = dateFormat.addDays(new Date(), 1);
-                        window.localStorage.setItem("board.alert." + CPS.app.shopId, nextDate);
-
-                    });
-                }
-            });
-
-
-        }
-    };
-
-    CPS.time.start = function(c){
+    CPS.process.start = function(c){
         $("#CPS_exector_msg").html("正在处理...");
-        CPS.time.i = 0;
-        CPS.time.s = 0;
-        CPS.time.e = 0;
-        CPS.time.c = c;
+        CPS.process.i = 0;
+        CPS.process.s = 0;
+        CPS.process.e = 0;
+        CPS.process.c = c;
         var fn = function(){
-            $("#CPS_exector_msg").html("正在处理("+ CPS.time.i+"/"+ CPS.time.c+")，成功("+CPS.time.s+"),失败("+CPS.time.e+"),请稍等...");
-            if(CPS.time.i>=CPS.time.c){
+            $("#CPS_exector_msg").html("正在处理("+ CPS.process.i+"/"+ CPS.process.c+")，成功("+CPS.process.s+"),失败("+CPS.process.e+"),请稍等...");
+            if(CPS.process.i>=CPS.process.c){
                 $("#CPS_exector_msg").html("处理完成,1秒后窗口关闭");
                 setTimeout(function(){
                     $("#CPS_tools_container").hide();
@@ -2106,17 +2114,17 @@
         };
         fn();
     };
-    CPS.time.incre = function(){
-        CPS.time.i++;
+    CPS.process.incre = function(){
+        CPS.process.i++;
     };
-    CPS.time.success = function(){
-        CPS.time.incre();
-        CPS.time.s++;
+    CPS.process.success = function(){
+        CPS.process.incre();
+        CPS.process.s++;
 
     };
-    CPS.time.fail = function(){
-        CPS.time.incre();
-        CPS.time.e++;
+    CPS.process.fail = function(){
+        CPS.process.incre();
+        CPS.process.e++;
     };
 
     CPS.layout.window = function(){
@@ -2164,7 +2172,7 @@
 
             CPS.app.findAdzoneList(campaignid,1,function(data){
                 var c = data.count;
-                CPS.time.start(c);
+                CPS.process.start(c);
                 var pt = parseInt((c+39)/40);
                 for(var p =1;p<=pt;p++){
                     CPS.app.modifyPriceByValue(campaignid,bidPrice,p);
@@ -2203,7 +2211,7 @@
 
             CPS.app.findAdzoneList(campaignid,1,function(data){
                 var c = data.count;
-                CPS.time.start(c);
+                CPS.process.start(c);
                 var pt = parseInt((c+39)/40);
                 for(var p =1;p<=pt;p++){
                     CPS.app.modifyPriceByRate(campaignid,rate,p);
@@ -2243,7 +2251,7 @@
             rate = 0-Math.abs(rate);
             CPS.app.findAdzoneList(campaignid,1,function(data){
                 var c = data.count;
-                CPS.time.start(c);
+                CPS.process.start(c);
                 var pt = parseInt((c+39)/40);
                 for(var p =1;p<=pt;p++){
                     CPS.app.modifyPriceByRate(campaignid,rate,p);
@@ -2297,11 +2305,11 @@
                     transList = transList.concat(c[0].data.list);
                 }
 
-                CPS.time.start(transList.length);
+                CPS.process.start(transList.length);
 
                 for(var i in transList) {
                     var trans = transList[i];
-                    CPS.app.targetReplaceAdzone(trans,adzoneId,type,bidPrice,function(){CPS.time.success()},function(){CPS.time.fail()});
+                    CPS.app.targetReplaceAdzone(trans,adzoneId,type,bidPrice,function(){CPS.process.success()},function(){CPS.process.fail()});
                 }
 
             });
@@ -2342,16 +2350,16 @@
                     transList = transList.concat(c[0].data.list);
                 }
 
-                CPS.time.start(transList.length);
+                CPS.process.start(transList.length);
 
                 for(var i in transList) {
                     var batchUnbindAdzones = [];
                     var trans = transList[i];
                     batchUnbindAdzones.push({"campaignId":trans.campaignId,"adzoneId":adzoneId,"transId":trans.transId});
                     CPS.app.unbindAdzones(batchUnbindAdzones,function(){
-                        CPS.time.success()
+                        CPS.process.success()
                     },function(){
-                        CPS.time.fail()
+                        CPS.process.fail()
                     });
                 }
 
@@ -2404,7 +2412,7 @@
                     transList = transList.concat(c[0].data.list);
                 }
 
-                CPS.time.start(transList.length);
+                CPS.process.start(transList.length);
 
                 for(var i in transList) {
                     var trans = transList[i];
@@ -2453,7 +2461,7 @@
                     CPS.app.adzone =  data2.adzone;
 
                     if(data2.type==1) {
-                        CPS.time.start(data2.dmps.length);
+                        CPS.process.start(data2.dmps.length);
                         for(var i in data2.dmps){
                             CPS.adgroup.createByDmp(data2.dmps[i]);
                         }
@@ -2466,7 +2474,7 @@
                         }
                         CPS.app.shopInfo2(CPS.app.shopLabels.join(","), function (data) {
 
-                            CPS.time.start(data.length);
+                            CPS.process.start(data.length);
 
                             for (var i in data) {
                                 var shop = {
