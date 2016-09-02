@@ -287,6 +287,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
             sendResponse("OK");
             break;
+        case 'SHOP_RANKING':
+            $.ajax({
+                url:"http://cps.da-mai.com/sycm/ranking/source.html",
+                type:"post",
+                dataType:"json",
+                async:false,
+                data:request
+            });
+            sendResponse("OK");
+            break;
         case 'HAS_GET_PAY_AMT':
             $.ajax({
                 url:"http://cps.da-mai.com/zuanshi/trade/hasget.html",

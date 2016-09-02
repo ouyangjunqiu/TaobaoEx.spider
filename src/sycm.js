@@ -64,7 +64,7 @@
                         shopid: m.runAsShopId,
                         type: 'PAYAMT'
                     });
-                    chrome.extension.sendMessage({resp: resp, nick: name, type: 'totalTrade'});
+                    //chrome.extension.sendMessage({resp: resp, nick: m.runAsUserName, type: 'totalTrade'});
                 }
             },
             error: function () {
@@ -72,6 +72,28 @@
             }
         });
 
+    };
+
+    CPS.sycm.getShopRanking = function(){
+        var m = CPS.sycm.micro;
+        $.ajax({
+            url:'https://sycm.taobao.com/portal/rank/getShopRank.json',
+            dataType:'json',
+            type:'get',
+            data:{_:(new Date()).getTime()},
+            success: function (resp) {
+                if(resp && !resp.hasError){
+                    chrome.extension.sendMessage({
+                        data: JSON.stringify(resp.content.data),
+                        nick: m.runAsUserName,
+                        usernumid: m.runAsUserId,
+                        shopname: m.runAsShopTitle,
+                        shopid: m.runAsShopId,
+                        type: 'SHOP_RANKING'
+                    });
+                }
+            }
+        })
     };
 
     CPS.sycm.microdata = function(){
@@ -116,6 +138,7 @@
             if (!resp.hasget)
                 CPS.sycm.getShopSummary();
         });
+
     };
 
 
@@ -131,6 +154,7 @@
                 CPS.sycm.getShopSummary2();
         });
 
+        CPS.sycm.getShopRanking();
     };
 
     $(document).ready(function(){
