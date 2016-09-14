@@ -119,7 +119,7 @@
             var m = CPS.sycm.micro;
 
             if(m && m.token) {
-                CPS.sycm.run();
+               // CPS.sycm.run();
             }else if(m && m.legalityToken){
                 CPS.sycm.run2();
             }
@@ -148,16 +148,23 @@
         var shopcatname = $("[data-card-id='IndustryRank']").find(".SIndustryRankSIndustryRank__type").text().trim();
         console.log(shopcatname);
         chrome.extension.sendMessage({shopname: m.runAsShopTitle,shopid: m.runAsShopId,usernumid:m.runAsUserId,nick: m.runAsUserName,shopcatname:shopcatname,type: 'SHOP_CLOUD_UPDATE'}, function (resp) {});
-        chrome.extension.sendMessage({nick: m.runAsShopTitle, type: 'HAS_GET_PAY_AMT'}, function (resp) {
-            console.log(resp);
-            if (!resp.hasget)
-                CPS.sycm.getShopSummary2();
+
+        chrome.extension.sendMessage({type: "SETTING_SYCMCTL"},function(resp){
+            if(resp){
+                chrome.extension.sendMessage({nick: m.runAsShopTitle, type: 'HAS_GET_PAY_AMT'}, function (resp) {
+                    if (!resp.hasget)
+                        CPS.sycm.getShopSummary2();
+                });
+                CPS.sycm.getShopRanking();
+            }
+
         });
 
-        CPS.sycm.getShopRanking();
+
     };
 
     $(document).ready(function(){
+
         setTimeout(function() {
             CPS.sycm.init();
 

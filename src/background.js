@@ -335,6 +335,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             chrome.notifications.create('',opt,function(id){
             });
             break;
+        case 'SETTING_SYCMCTL':
+            var status = window.localStorage.getItem("cps.setting.sycmctl");
+            status = status && status == "on";
+            sendResponse(status);
+            break;
     }
 
 });

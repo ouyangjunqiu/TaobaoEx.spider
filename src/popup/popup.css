@@ -1,8 +1,9 @@
 .login_item_box {
     min-width: 200px;
+    padding: 10px 0px;
 }
 .login_item_box small {
-    font-weight: bold;
+    font-weight: 100;
     color: #434343;
 }
 
@@ -27,13 +28,35 @@
 
 .login_itemlist_wrap li p{
     font-weight: bold;
-    font-size: 16px;
+    font-size: 12px;
     color: #2c82bb;
     font-family: 微软雅黑, 宋体, 幼圆;
     line-height: 50%;
 }
 .login_itemlist_wrap li small {
     color: #434343;
-    font-size: 12px;
     font-weight:100;
+}
+
+.cps_setting_box {
+    padding: 10px 0px;
+}
+
+.cps_setting_box .on {
+    color: green;
+    cursor:pointer;
+}
+
+.cps_setting_box .off {
+    color: red;
+    cursor:pointer;
+}
+
+.cps_setting_box small {
+    font-weight: 100;
+    color: #434343;
+}
+
+fieldset {
+    border: 1px solid #ddd;
 }

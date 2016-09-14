@@ -46,6 +46,7 @@ window.addEventListener('message',function(event){
 });
 
 $(document).ready(function(){
+
     chrome.extension.sendMessage({type: "VERSION"},function(response){
 
         CPS.app.initVersion(response);
