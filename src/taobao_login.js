@@ -1,9 +1,17 @@
+function hasClass(ele,cls) {
+    return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
+}
+
 chrome.extension.onMessage.addListener(function (msg, sender, sendResponse) {
     setTimeout(function(){
 		var otherAccount = document.getElementById('J_OtherAccountV');
 		if(otherAccount) otherAccount.click();
-        var quickStatic = document.getElementById('J_Quick2Static');
-        if(quickStatic) quickStatic.click();
+
+        var loginBox = document.getElementById('J_LoginBox');
+        if(loginBox && hasClass(loginBox,"module-quick")){
+            var quickStatic = document.getElementById('J_Quick2Static');
+            if(quickStatic) quickStatic.click();
+        }
 
         setTimeout(function(){
             var safeLogin = document.getElementById("J_SafeLoginCheck");

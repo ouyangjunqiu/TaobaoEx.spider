@@ -2,48 +2,48 @@
     var CPS = {};
     CPS.sycm = {};
 
-    CPS.sycm.getShopSummary = function(){
-        setTimeout(function() {
-            var m = CPS.sycm.micro;
-            var token = m.token;
-            var date = new Date();
-            var startDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 7);
-            var endDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 1);
-            $.ajax({
-                url: 'https://diy.sycm.taobao.com/execute/preview.json?date=' + startDate + "," + endDate + '&dateId=1006960&dateType=static&desc=&filter=[6,7]&id=null&itemId=null&name=&owner=user&show=[{%22id%22:1007113},{%22id%22:1016040},{%22id%22:1007117},{%22id%22:1006972},{%22id%22:1007572},{%22id%22:1006976},{%22id%22:1007122},{%22id%22:1016031},{%22id%22:1007126},{%22id%22:1006979},{%22id%22:1007581},{%22id%22:1006984}]&sycmToken='+token,
-                dataType: 'json',
-                type: 'get',
-                success: function (resp) {
-                    chrome.extension.sendMessage({resp: resp, nick:CPS.sycm.shopname , type: 'trade'});
-                },
-                error: function () {
-                    alert("data error!!");
-                }
-            });
-            $.ajax({
-                url: 'https://bda.sycm.taobao.com/summary/getShopSummary.json?date  Range=' + endDate + "|" + endDate + '&dateType=day&dateType=day&sycmToken='+token,
-                dataType: 'json',
-                type: 'get',
-                success: function (resp) {
-                    // console.log(resp);
-                    if(resp.content && resp.content.data && resp.content.data.payAmt &&  resp.content.data.payAmt.trend) {
-                        chrome.extension.sendMessage({
-                            payAmt: JSON.stringify(resp.content.data.payAmt.trend),
-                            nick: CPS.sycm.shopname,
-                            usernumid: m.userId,
-                            type: 'PAYAMT'
-                        });
-                        chrome.extension.sendMessage({resp: resp, nick: CPS.sycm.shopname, type: 'totalTrade'});
-                    }
-                },
-                error: function () {
-                    alert("data error!!");
-                }
-            });
-        },1000);
-    };
+    //CPS.sycm.getShopSummary = function(){
+    //    setTimeout(function() {
+    //        var m = CPS.sycm.micro;
+    //        var token = m.token;
+    //        var date = new Date();
+    //        var startDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 7);
+    //        var endDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 1);
+    //        $.ajax({
+    //            url: 'https://diy.sycm.taobao.com/execute/preview.json?date=' + startDate + "," + endDate + '&dateId=1006960&dateType=static&desc=&filter=[6,7]&id=null&itemId=null&name=&owner=user&show=[{%22id%22:1007113},{%22id%22:1016040},{%22id%22:1007117},{%22id%22:1006972},{%22id%22:1007572},{%22id%22:1006976},{%22id%22:1007122},{%22id%22:1016031},{%22id%22:1007126},{%22id%22:1006979},{%22id%22:1007581},{%22id%22:1006984}]&sycmToken='+token,
+    //            dataType: 'json',
+    //            type: 'get',
+    //            success: function (resp) {
+    //                chrome.extension.sendMessage({resp: resp, nick:CPS.sycm.shopname , type: 'trade'});
+    //            },
+    //            error: function () {
+    //                alert("data error!!");
+    //            }
+    //        });
+    //        $.ajax({
+    //            url: 'https://bda.sycm.taobao.com/summary/getShopSummary.json?date  Range=' + endDate + "|" + endDate + '&dateType=day&dateType=day&sycmToken='+token,
+    //            dataType: 'json',
+    //            type: 'get',
+    //            success: function (resp) {
+    //                // console.log(resp);
+    //                if(resp.content && resp.content.data && resp.content.data.payAmt &&  resp.content.data.payAmt.trend) {
+    //                    chrome.extension.sendMessage({
+    //                        payAmt: JSON.stringify(resp.content.data.payAmt.trend),
+    //                        nick: CPS.sycm.shopname,
+    //                        usernumid: m.userId,
+    //                        type: 'PAYAMT'
+    //                    });
+    //                    chrome.extension.sendMessage({resp: resp, nick: CPS.sycm.shopname, type: 'totalTrade'});
+    //                }
+    //            },
+    //            error: function () {
+    //                alert("data error!!");
+    //            }
+    //        });
+    //    },1000);
+    //};
 
-    CPS.sycm.getShopSummary2 = function(){
+    CPS.sycm.getShopTrade = function(){
         var m = CPS.sycm.micro;
         var date = new Date();
         var startDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 7);
@@ -63,6 +63,68 @@
                         shopname: m.runAsShopTitle,
                         shopid: m.runAsShopId,
                         type: 'PAYAMT'
+                    });
+                    //chrome.extension.sendMessage({resp: resp, nick: m.runAsUserName, type: 'totalTrade'});
+                }
+            },
+            error: function () {
+                alert("data error!!");
+            }
+        });
+
+    };
+
+    CPS.sycm.getShopUv = function(){
+        var m = CPS.sycm.micro;
+        var date = new Date();
+        var startDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 7);
+        var endDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 1);
+        $.ajax({
+            url: 'https://sycm.taobao.com/bda/summary/getShopSummaryTrend.json',
+            dataType: 'json',
+            data:{dateRange:endDate + "|" + endDate,dateType:"day",device:0,indexCode:"uv"},
+            type: 'get',
+            success: function (resp) {
+                console.log(resp);
+                if(resp.content && resp.content.data && resp.content.data.uv) {
+                    chrome.extension.sendMessage({
+                        uv: JSON.stringify(resp.content.data.uv),
+                        nick: m.runAsUserName,
+                        usernumid: m.runAsUserId,
+                        shopname: m.runAsShopTitle,
+                        shopid: m.runAsShopId,
+                        type: 'SYCM_UV'
+                    });
+                    //chrome.extension.sendMessage({resp: resp, nick: m.runAsUserName, type: 'totalTrade'});
+                }
+            },
+            error: function () {
+                alert("data error!!");
+            }
+        });
+
+    };
+
+    CPS.sycm.getShopPaypct = function(){
+        var m = CPS.sycm.micro;
+        var date = new Date();
+        var startDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 7);
+        var endDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDate() - 1);
+        $.ajax({
+            url: 'https://sycm.taobao.com/bda/summary/getShopSummaryTrend.json',
+            dataType: 'json',
+            data:{dateRange:endDate + "|" + endDate,dateType:"day",device:0,indexCode:"payPct"},
+            type: 'get',
+            success: function (resp) {
+                console.log(resp);
+                if(resp.content && resp.content.data && resp.content.data.payPct) {
+                    chrome.extension.sendMessage({
+                        pct: JSON.stringify(resp.content.data.payPct),
+                        nick: m.runAsUserName,
+                        usernumid: m.runAsUserId,
+                        shopname: m.runAsShopTitle,
+                        shopid: m.runAsShopId,
+                        type: 'SYCM_PAYPCT'
                     });
                     //chrome.extension.sendMessage({resp: resp, nick: m.runAsUserName, type: 'totalTrade'});
                 }
@@ -127,19 +189,19 @@
             setTimeout(function() {CPS.sycm.init()},2000);
         }
     };
-
-    CPS.sycm.run = function(){
-        var m = CPS.sycm.micro;
-        var shopcatname = $(".shop .cate-name").text().trim();
-
-        chrome.extension.sendMessage({shopname: CPS.sycm.shopname,usernumid:m.userId,shopcatname:shopcatname,type: 'SHOP_CLOUD_UPDATE'}, function (resp) {});
-        chrome.extension.sendMessage({nick: name, type: 'HAS_GET_PAY_AMT'}, function (resp) {
-            console.log(resp);
-            if (!resp.hasget)
-                CPS.sycm.getShopSummary();
-        });
-
-    };
+    //
+    //CPS.sycm.run = function(){
+    //    var m = CPS.sycm.micro;
+    //    var shopcatname = $(".shop .cate-name").text().trim();
+    //
+    //    chrome.extension.sendMessage({shopname: CPS.sycm.shopname,usernumid:m.userId,shopcatname:shopcatname,type: 'SHOP_CLOUD_UPDATE'}, function (resp) {});
+    //    chrome.extension.sendMessage({nick: name, type: 'HAS_GET_PAY_AMT'}, function (resp) {
+    //        console.log(resp);
+    //        if (!resp.hasget)
+    //            CPS.sycm.getShopSummary();
+    //    });
+    //
+    //};
 
 
     CPS.sycm.run2 = function(){
@@ -152,10 +214,13 @@
         chrome.extension.sendMessage({type: "SETTING_SYCMCTL"},function(resp){
             if(resp){
                 chrome.extension.sendMessage({nick: m.runAsShopTitle, type: 'HAS_GET_PAY_AMT'}, function (resp) {
-                    if (!resp.hasget)
-                        CPS.sycm.getShopSummary2();
+                    if (!resp.hasget) {
+                        CPS.sycm.getShopTrade();
+                        CPS.sycm.getShopUv();
+                        CPS.sycm.getShopPaypct();
+                        CPS.sycm.getShopRanking();
+                    }
                 });
-                CPS.sycm.getShopRanking();
             }
 
         });

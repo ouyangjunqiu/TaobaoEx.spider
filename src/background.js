@@ -287,6 +287,27 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
             sendResponse("OK");
             break;
+        case 'SYCM_UV':
+            $.ajax({
+                url:"http://cps.da-mai.com/sycm/uv/source.html",
+                type:"post",
+                dataType:"json",
+                async:false,
+                data:request
+            });
+            sendResponse("OK");
+            break;
+        case 'SYCM_PAYPCT':
+            $.ajax({
+                url:"http://cps.da-mai.com/sycm/paypct/source.html",
+                type:"post",
+                dataType:"json",
+                async:false,
+                data:request
+            });
+            sendResponse("OK");
+            break;
+
         case 'SHOP_RANKING':
             $.ajax({
                 url:"http://cps.da-mai.com/sycm/ranking/source.html",
