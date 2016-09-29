@@ -180,6 +180,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         CPS.saveTab(tab.id);
                     });
                     break;
+                case 'tbk':
+                    chrome.tabs.create({
+                        url:"http://www.alimama.com/member/login.htm?forward=http%3A%2F%2Fad.alimama.com%2Fmyunion.htm",
+                        active:true
+                    },function(tab){
+                        CPS.tabId = tab.id;
+                        CPS.saveTab(tab.id);
+                    });
+                    break;
                 default :
                     chrome.tabs.create({
                         url:"https://login.taobao.com/member/login.jhtml",

@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "version": "3.2.6",
+    "version": "3.2.7",
     "name": "精准投放平台操作助手",
     "description": "直通车、钻石展位浏览器快捷操作助手.",
     "background": {
@@ -69,7 +69,7 @@
             "all_frames":true
         },{
             "matches":["http://zuanshi.taobao.com/*"],
-            "js":["lib/jquery-2.0.0.min.js","lib/date.js","lib/web-storage-cache.min.js","lib/select2/select2.min.js","zuanshi/app2.js"],
+            "js":["lib/jquery-2.0.0.min.js","lib/date.js","lib/web-storage-cache.min.js","lib/select2/select2.min.js","zuanshi/app.js"],
             "css":["lib/select2/select2.min.css","zuanshi/css/base.css"],
             "run_at":"document_end",
             "all_frames":true

@@ -103,38 +103,47 @@
 
 #CPS_campaign_alert {
     position: fixed;
-    top: 2px;
-    left: 10%;
-    z-index: 119;
-    background-color: rgb(255, 255, 255);
-    border: 1px solid rgb(230, 230, 230);
+    width:477px;
+    /*height:462px;*/
+    left: 30%;
+    top: 2%;
+    background-color: #fff;
+    border: 1px solid #E6E6E6;
     border-radius: 6px;
+    z-index: 99999;
 }
 
-#CPS_campaign_alert .h {
+#CPS_campaign_alert .hd {
+    border-bottom:  1px solid #4d7fff;
     position: relative;
-    border-bottom: 1px solid rgb(77, 127, 255);
-    font-size: 16px;
-    font-weight: bold;
-    padding: 10px;
 }
 
-#CPS_campaign_alert .c {
+#CPS_campaign_alert .hd p{
+    margin:10px;font-size: 16px;font-weight: bold;
+}
+
+#CPS_campaign_alert .hd .cls_btn {
+    position: absolute;
+    top: 4px;
+    right: 20px;
+}
+
+#CPS_campaign_alert .content {
     padding: 10px;
     max-height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-#CPS_campaign_alert .c p {
+#CPS_campaign_alert .content p {
     padding-bottom:5px;
 }
 
-#CPS_campaign_alert .c p strong {
+#CPS_campaign_alert .content p strong {
     padding-right: 5px;
 }
 
-#CPS_campaign_alert .c em {
+#CPS_campaign_alert .content em {
     font-weight: bold;
     color: #fa6e50;
 }
@@ -200,7 +209,7 @@
 #CPS_layout_menu {
     position: fixed;
     left: 2px;
-    bottom: 20px;
+    bottom: 10px;
     z-index: 99998;
 }
 
