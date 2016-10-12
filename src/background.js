@@ -116,6 +116,8 @@ chrome.webNavigation.onDOMContentLoaded.addListener(function(details){
             chrome.tabs.sendMessage(details.tabId,info);
         }else if(details.url.indexOf("//www.alimama.com/member/login.htm")){
             chrome.tabs.sendMessage(details.tabId,info);
+        }else if(details.url.indexOf("//sycm.taobao.com/custom/login.htm")){
+            chrome.tabs.sendMessage(details.tabId,info);
         }else if(details.url.indexOf("mai.taobao.com")){
             chrome.tabs.sendMessage(details.tabId,info);
         }else if(details.url == 'http://sem.taobao.com/index.do') {
@@ -146,7 +148,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     break;
                 case 'shenyicanmou':
                     chrome.tabs.create({
-                        url:"https://login.taobao.com/member/login.jhtml?sub=true&from=subway&enup=false&full_redirect=false&tpl_redirect_url=http://sycm.taobao.com",
+                        url:"https://sycm.taobao.com/custom/login.htm",
                         active:true
                     },function(tab){
                         CPS.tabId = tab.id;
