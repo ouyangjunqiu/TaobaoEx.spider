@@ -55,9 +55,9 @@
             type: 'get',
             success: function (resp) {
                 console.log(resp);
-                if(resp.content && resp.content.data && resp.content.data.payAmt) {
+                if(resp && resp.data && resp.data.payAmt) {
                     chrome.extension.sendMessage({
-                        payAmt: JSON.stringify(resp.content.data.payAmt),
+                        payAmt: JSON.stringify(resp.data.payAmt),
                         nick: m.runAsUserName,
                         usernumid: m.runAsUserId,
                         shopname: m.runAsShopTitle,
@@ -86,9 +86,9 @@
             type: 'get',
             success: function (resp) {
                 console.log(resp);
-                if(resp.content && resp.content.data && resp.content.data.uv) {
+                if(resp && resp.data && resp.data.uv) {
                     chrome.extension.sendMessage({
-                        uv: JSON.stringify(resp.content.data.uv),
+                        uv: JSON.stringify(resp.data.uv),
                         nick: m.runAsUserName,
                         usernumid: m.runAsUserId,
                         shopname: m.runAsShopTitle,
@@ -117,9 +117,9 @@
             type: 'get',
             success: function (resp) {
                 console.log(resp);
-                if(resp.content && resp.content.data && resp.content.data.payPct) {
+                if(resp && resp.data && resp.data.payPct) {
                     chrome.extension.sendMessage({
-                        pct: JSON.stringify(resp.content.data.payPct),
+                        pct: JSON.stringify(resp.data.payPct),
                         nick: m.runAsUserName,
                         usernumid: m.runAsUserId,
                         shopname: m.runAsShopTitle,
