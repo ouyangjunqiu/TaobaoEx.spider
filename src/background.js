@@ -369,7 +369,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             break;
         case 'SETTING_SYCMCTL':
             var status = window.localStorage.getItem("cps.setting.sycmctl");
-            status = status && status == "on";
+            status = !(status && status == "off");
             sendResponse(status);
             break;
     }

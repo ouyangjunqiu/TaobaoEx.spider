@@ -20,7 +20,7 @@
      * @version 3.1.2
      */
     CPS.storage.set = function(k,v){
-        var w = new WebStorageCache();
+        var w = new WebStorageCache({storage: 'sessionStorage'});
         w.set(k,v,{exp:8*3600});
     };
 
@@ -31,7 +31,7 @@
      * @version 3.1.2
      */
     CPS.storage.get = function(k){
-        var w = new WebStorageCache();
+        var w = new WebStorageCache({storage: 'sessionStorage'});
         return w.get(k);
     };
 
@@ -61,8 +61,8 @@
 
 
     CPS.app.start = function () {
-        var w = new WebStorageCache();
-        w.deleteAllExpires();
+       /* var w = new WebStorageCache({storage: 'sessionStorage'});
+        w.deleteAllExpires();*/
 
         CPS.app.init();
     };
@@ -221,7 +221,7 @@
      */
     CPS.app.run = function () {
 
-        CPS.app.accountRpt();
+       // CPS.app.accountRpt();
 
         CPS.app.rptnAdvertiser("click",3);
         CPS.app.rptnAdvertiser("click",7);

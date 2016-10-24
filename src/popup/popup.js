@@ -62,7 +62,7 @@ $(document).ready(function(){
     });
 
     var status = window.localStorage.getItem("cps.setting.sycmctl");
-    status = status && status == "on";
+    status = !(status && status == "off");
     if(status){
         $("[data-role=sycmctl]").html("开启");
         $("[data-role=sycmctl]").attr("data-status","on");

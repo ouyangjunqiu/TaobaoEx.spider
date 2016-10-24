@@ -1,28 +1,29 @@
 chrome.extension.onMessage.addListener(function (msg, sender, sendResponse) {
     setTimeout(function(){
-        var nick = msg.nick;
-        console.log(nick);
-        $.ajax({
-            url: 'http://sem.taobao.com/userinfo.do?callback=userInfoCallback',
-            dataType: 'text',
-            type: 'get',
-            success: function (resp) {
-                var  userInfo = eval(resp.substring(16));
-                console.log(userInfo);
-                var token =  userInfo.result.token;
-                console.log(token);
-                getShopinfoByToken(token,nick);
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                console.log(XMLHttpRequest.status);
-                console.log(XMLHttpRequest.readyState);
-                console.log(textStatus);
-                alert("网络异常！");
-            },
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
-            }
-        });
+        if(msg && msg.nick){
+            var nick = msg.nick;
+            console.log(nick);
+            $.ajax({
+                url: 'http://sem.taobao.com/userinfo.do?callback=userInfoCallback',
+                dataType: 'text',
+                type: 'get',
+                success: function (resp) {
+                    var  userInfo = eval(resp.substring(16));
+                    console.log(userInfo);
+                    var token =  userInfo.result.token;
+                   // console.log(token);
+                    getShopinfoByToken(token,nick);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest.status);
+                    console.log(XMLHttpRequest.readyState);
+                    console.log(textStatus);
+                },
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+                }
+            });
+        }
     },2000);
 });
 
@@ -38,19 +39,17 @@ function getShopinfoByToken(token,nick){
                 var custid = resp.result[0].custid;
                 var tpcompanyid = resp.result[0].tpcompanyid;
                 var tpcompanyname = resp.result[0].tpcompanyname;
-                console.log(custid);
                 login_subway(custid,tpcompanyid,tpcompanyname,token);
             }else{
-                alert("此店铺不是服务中的店铺，无法登陆直通车！");
-                window.location.href="http://sem.taobao.com/logout.do?token="+token;
+                alert("无法找到该店铺，请确认代理账号中有该店铺的授权！");
+               // window.location.href="http://sem.taobao.com/logout.do?token="+token;
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             console.log(XMLHttpRequest.status);
             console.log(XMLHttpRequest.readyState);
             console.log(textStatus);
-            alert("网络异常！");
-            window.location.href="http://sem.taobao.com/logout.do?token="+token;
+           // window.location.href="http://sem.taobao.com/logout.do?token="+token;
         },
         beforeSend: function(xhr) {
             xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
@@ -75,11 +74,8 @@ function login_subway(custid,tpcompanyid,tpcompanyname,token){
 
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log(XMLHttpRequest.status);
-            console.log(XMLHttpRequest.readyState);
-            console.log(textStatus);
-            alert("网络异常！");
-            window.location.href="http://sem.taobao.com/logout.do?token="+token;
+            alert("登录直通车失败，建议手动登录！");
+           // window.location.href="http://sem.taobao.com/logout.do?token="+token;
         },
         beforeSend: function(xhr) {
             xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
