@@ -59,28 +59,13 @@ function getShopinfoByToken(token,nick){
 
 
 function login_subway(custid,tpcompanyid,tpcompanyname,token){
-    var rand = Math.floor(Math.random () * 900) + 100;
-    console.log(rand);
+
+    document.write("<script>function jsonp9999(resp){if(resp.code=='200'){window.location.href=\"http://subway.simba.taobao.com/\"}else{alert(\"无法登录到直通车，请手动登录！\");}}</script>");
     $.ajax({
-        url: 'http://subway.simba.taobao.com/sem_login.htm?custID='+custid+'&semProviderId='+tpcompanyid+'&semProviderName='+tpcompanyname+'&opTypeEnum=WRITE&callback=jsonp'+rand,
-        dataType: 'text',
+        url: 'http://subway.simba.taobao.com/sem_login.htm?custID='+custid+'&semProviderId='+tpcompanyid+'&semProviderName='+tpcompanyname+'&opTypeEnum=WRITE',
+        dataType: 'jsonp',
         type: 'get',
-        success: function (resp) {
-            console.log(resp);
-            var result = eval(resp.substring(8));
-            if(result.code=='200'){
-                window.location.href="http://subway.simba.taobao.com/";
-            }
-
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            alert("登录直通车失败，建议手动登录！");
-           // window.location.href="http://sem.taobao.com/logout.do?token="+token;
-        },
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
-
-        }
+        jsonpCallback: 'jsonp9999'
     });
 }
 
