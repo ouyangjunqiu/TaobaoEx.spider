@@ -12,6 +12,16 @@
     CPS.rpt = {};
     CPS.storage = {};
     CPS.mutex = {};
+    CPS.lockdata = {};
+
+    /**
+     *
+     * @param uri
+     * @param data
+     */
+    CPS.utils.postdata = function(uri,data){
+        chrome.extension.sendMessage({type: "ZUANSHIDATA",uri:uri,data:data})
+    };
 
     /**
      * 存储数据
@@ -20,7 +30,7 @@
      * @version 3.1.2
      */
     CPS.storage.set = function(k,v){
-        var w = new WebStorageCache({storage: 'sessionStorage'});
+        var w = new WebStorageCache();
         w.set(k,v,{exp:8*3600});
     };
 
@@ -31,32 +41,58 @@
      * @version 3.1.2
      */
     CPS.storage.get = function(k){
-        var w = new WebStorageCache({storage: 'sessionStorage'});
+        var w = new WebStorageCache();
         return w.get(k);
     };
 
+    /**
+     *
+     * @param id
+     */
+    CPS.mutex.load = function(id){
+        var k = "zuanshi.mutex.data."+id;
+        var d =  CPS.storage.get(k);
+        if(d){
+            CPS.lockdata = d;
+        }else{
+            CPS.lockdata = {};
+        }
+    };
+
+    CPS.mutex.save = function(id){
+        var k = "zuanshi.mutex.data."+id;
+        CPS.storage.set(k,CPS.lockdata);
+    };
+
+    /**
+     *
+     * @param id
+     */
+    CPS.mutex.auto = function(id){
+        CPS.mutex.hwnd = setInterval(function(){
+           CPS.mutex.save(id);
+       },1000);
+
+        setTimeout(function(){
+            CPS.mutex.hwnd && clearInterval(CPS.mutex.hwnd);
+        },120000);
+    };
     /**
      * 检测是否锁定
      * @param i
      * @returns {boolean}
      */
     CPS.mutex.is = function(i){
-        var f = new DateFormat();
-        var k = "zuanshi.mutex.has."+ CPS.app.shopId+"."+i;
-        var d = CPS.storage.get(k);
-        var now = f.formatCurrentDate("yyyy-MM-dd");
+        var d = CPS.lockdata[i];
 
-        return !!(d && (d["d"] == now));
+        return !!(d && (d == 1));
     };
     /**
      * 加锁
      * @param i
      */
     CPS.mutex.lock = function(i){
-        var f = new DateFormat();
-        var k = "zuanshi.mutex.has."+ CPS.app.shopId+"."+i;
-        var c = {d: f.formatCurrentDate("yyyy-MM-dd")};
-        CPS.storage.set(k,c);
+        CPS.lockdata[i] = 1;
     };
 
 
@@ -93,20 +129,21 @@
     CPS.app.user = function () {
         setTimeout(function () {
             $.ajax({
-                url: 'http://zuanshi.taobao.com/loginUser/info.json',
+                url: 'https://zuanshi.taobao.com/loginUser/info.json',
                 type: 'GET',
                 dataType: 'jsonp',
                 jsonpCallback: 'jsonp29',
                 success: function (resp) {
                     CPS.app.csrfID = resp.data.csrfID;
                     CPS.app.rptToken = resp.data.rptToken;
-                    CPS.app.info = resp.data;
                     CPS.app.loginUser = resp.data.loginUser;
                     CPS.app.shopId = resp.data.loginUser.shopId;
                     CPS.app.productId = resp.data.productPermission.productZuanshi.productId;
                     CPS.app.postUser();
 
                     CPS.layout.window();
+                    CPS.mutex.load(CPS.app.shopId);
+                    CPS.mutex.auto(CPS.app.shopId);
 
                     var f = new DateFormat();
                     var h = f.formatCurrentDate("HH");
@@ -120,11 +157,15 @@
                     }
 
 
+
                     CPS.campaign.alert();
                     // CPS.board.alert();
-                    CPS.board.findAdboardAll();
+                    setTimeout(function(){
+                        CPS.board.findAdboardAll();
 
-                    CPS.dmp.get();
+                        CPS.dmp.get();
+                    },10000);
+
                 }
             });
         }, 1000);
@@ -134,8 +175,9 @@
      * 获取所有的DMP标签
      */
     CPS.dmp.get = function(){
+        if(CPS.mutex.is("dmp")) return false;
         $.ajax({
-            url:"http://zuanshi.taobao.com/dmpcrowdTarget/list.json",
+            url:"https://zuanshi.taobao.com/dmpcrowdTarget/list.json",
             type:"post",
             dataType:"json",
             data:{csrfID:CPS.app.csrfID},
@@ -152,15 +194,18 @@
      * @param data
      */
     CPS.dmp.post = function(data){
-        $.ajax({
+        CPS.mutex.lock("dmp");
+        CPS.utils.postdata("/zuanshi/dmp/source",{nick:CPS.app.nick,data:JSON.stringify(data)});
+
+       /* $.ajax({
             url:"http://cps.da-mai.com/zuanshi/dmp/source.html",
             type:"post",
             dataType:"json",
             data:{nick:CPS.app.nick,data:JSON.stringify(data)},
             success:function(resp){
-
+                CPS.mutex.lock("dmp")
             }
-        })
+        })*/
     };
 
     /**
@@ -207,12 +252,13 @@
      * @version 2.9.6
      */
     CPS.app.postUser = function(){
-        $.ajax({
+        CPS.utils.postdata("/main/shop/cloudupdate",{nick:  CPS.app.nick,userid:CPS.app.loginUser.userId,shopid:CPS.app.loginUser.shopId,usernumid:CPS.app.loginUser.userNumId});
+        /*$.ajax({
             url: 'http://cps.da-mai.com/main/shop/cloudupdate.html',
             dataType: 'json',
             data: {nick:  CPS.app.nick,userid:CPS.app.loginUser.userId,shopid:CPS.app.loginUser.shopId,usernumid:CPS.app.loginUser.userNumId},
             type: 'post'
-        });
+        });*/
     };
 
     /**
@@ -231,7 +277,7 @@
 
             var r3 = function(i){
 
-                var t = Math.random()*500+500;
+                var t = Math.random()*1000+500;
                 var f = new DateFormat();
                 var e = f.addDays(new Date(), i, "yyyy-MM-dd");
                 setTimeout(function(){
@@ -243,7 +289,7 @@
             };
 
             var r7 = function(i){
-                var t = Math.random()*500+500;
+                var t = Math.random()*1000+1500;
                 var f = new DateFormat();
                 var e = f.addDays(new Date(), i, "yyyy-MM-dd");
                 setTimeout(function(){
@@ -255,7 +301,7 @@
             };
 
             var r15 = function(i){
-                var t = Math.random()*500+500;
+                var t = Math.random()*1000+2500;
                 var f = new DateFormat();
                 var e = f.addDays(new Date(), i, "yyyy-MM-dd");
                 setTimeout(function(){
@@ -266,11 +312,11 @@
                 },t);
             };
 
-            for(var i=-5;i<=-1;i++){
+            for(var i=-4;i<=-2;i++){
                 r3(i);
             }
 
-            for(var j=-9;j<=-5;j++){
+            for(var j=-9;j<=-7;j++){
                 r7(j);
             }
 
@@ -278,53 +324,8 @@
                 r15(k);
             }
 
-        },8000);
+        },18000);
 
-    };
-
-    /**
-     *  获取展示网络报表
-     *  @version 3.1.2
-     */
-    CPS.app.accountRpt = function () {
-        if(CPS.mutex.is("rpt1")) return false;
-
-        var t = parseInt(Math.random()*500+500);
-        setTimeout(function () {
-            var f = new DateFormat();
-            var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
-            var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
-            $.ajax({
-                url: 'http://zuanshi.taobao.com/rptn/advertiserCmDay/all.json',
-                dataType: 'json',
-                data: {csrfID:  CPS.app.csrfID, startTime: b, endTime: e, campaignModel: 1},
-                type: 'get',
-                success: function (data) {
-                    CPS.app.postAccountRpt(data);
-                }
-            });
-
-        }, t);
-    };
-
-    /**
-     * 提交展示网络报表到平台
-     * @version 3.1.2
-     */
-    CPS.app.postAccountRpt = function (rpts) {
-        var t = parseInt(Math.random()*500+500);
-        setTimeout(function () {
-            $.ajax({
-                url: 'http://cps.da-mai.com/zuanshi/rpt/source.html',
-                dataType: 'json',
-                data: {userinfo: CPS.app.csrfID, rpts: JSON.stringify(rpts), nick: CPS.app.nick},
-                type: 'post',
-                success: function (data) {
-                    CPS.mutex.lock("rpt1")
-                }
-            });
-
-        }, t);
     };
 
     /**
@@ -332,7 +333,7 @@
      *  @version 3.1.2
      */
     CPS.app.rptnAdvertiser = function (effectType,effect) {
-        if(CPS.mutex.is("advertiser."+effectType+"."+effect)) return false;
+        if(CPS.mutex.is("z"+effectType+effect)) return false;
 
         var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
@@ -341,7 +342,7 @@
             var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
 
             $.ajax({
-                url: 'http://report.simba.taobao.com/common/query/zszw/1/rptAdvertiserDayList.json',
+                url: 'https://report.simba.taobao.com/common/query/zszw/1/rptAdvertiserDayList.json',
                 dataType: 'json',
                 //   jsonpCallback: 'jsonp53258',
                 data: {csrfID:  CPS.app.csrfID,token:CPS.app.rptToken,productId:CPS.app.productId, startTime: b, endTime: e, campaignModel: 1,effectType:effectType,effect:effect},
@@ -363,15 +364,20 @@
     CPS.app.postAdvertiserRpt = function (effectType,effect,data) {
         var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
-            $.ajax({
+            CPS.mutex.lock("z"+effectType+effect);
+
+            CPS.utils.postdata("/zz/advertiserrpt/source",{effectType: effectType, effect:effect, data: JSON.stringify(data), nick: CPS.app.nick});
+
+
+          /*  $.ajax({
                 url: 'http://cps.da-mai.com/zz/advertiserrpt/source.html',
                 dataType: 'json',
                 data: {effectType: effectType, effect:effect, data: JSON.stringify(data), nick: CPS.app.nick},
                 type: 'post',
                 success: function (data) {
-                    CPS.mutex.lock("advertiser."+effectType+"."+effect)
+
                 }
-            });
+            });*/
 
         }, t);
     };
@@ -388,19 +394,19 @@
             var logDateStr = dateFormat.addDays(new Date(), -1, "yyyy-MM-dd");
             $.when(
                 $.ajax({
-                    url: 'http://zuanshi.taobao.com/index/account.json',
+                    url: 'https://zuanshi.taobao.com/index/account.json',
                     dataType: 'json',
                     data: {csrfID: CPS.app.csrfID},
                     type: 'get'
                 }),
                 $.ajax({
-                    url: 'http://zuanshi.taobao.com/rptn/advertiserHour/listSds.json',
+                    url: 'https://zuanshi.taobao.com/rptn/advertiserHour/listSds.json',
                     dataType: 'json',
                     data: {csrfID: CPS.app.csrfID,logDate:logDateStr},
                     type: 'get'
                 }),
                 $.ajax({
-                    url: 'http://zuanshi.taobao.com/rptn/advertiserHour/list.json',
+                    url: 'https://zuanshi.taobao.com/rptn/advertiserHour/list.json',
                     dataType: 'json',
                     data: {csrfID: CPS.app.csrfID},
                     type: 'get'
@@ -408,7 +414,14 @@
             ).then(function(a,b,c){
                 if(a && b && c && a[0] && b[0] && c[0]){
                     if(a[0].data && b[0].data && c[0].data){
-                        $.ajax({
+
+                        CPS.utils.postdata("/zuanshi/advertiser/source",{
+                            nick: CPS.app.nick,
+                            accountdata: JSON.stringify(a[0].data),
+                            yesterdaydata: JSON.stringify(b[0].data),
+                            todaydata: JSON.stringify(c[0].data)
+                        });
+                       /* $.ajax({
                             url: 'http://cps.da-mai.com/zuanshi/advertiser/source.html',
                             dataType: 'json',
                             data: {
@@ -418,7 +431,7 @@
                                 todaydata: JSON.stringify(c[0].data)
                             },
                             type: 'post'
-                        })
+                        })*/
                     }
                 }
             })
@@ -437,13 +450,13 @@
             var y = f.addDays(new Date(), -1, "yyyy-MM-dd");
             $.when(
                 $.ajax({
-                    url: 'http://zuanshi.taobao.com/index/account.json',
+                    url: 'https://zuanshi.taobao.com/index/account.json',
                     dataType: 'json',
                     data: {csrfID: CPS.app.csrfID},
                     type: 'get'
                 }),
                 $.ajax({
-                    url: 'http://report.simba.taobao.com/common/query/zszw/1/advertiserHourSumList.json',
+                    url: 'https://report.simba.taobao.com/common/query/zszw/1/advertiserHourSumList.json',
                     dataType: 'json',
                     data: {
                         csrfID: CPS.app.csrfID,
@@ -455,7 +468,7 @@
                     type: 'get'
                 }),
                 $.ajax({
-                    url: 'http://report.simba.taobao.com/common/query/zszw/1/advertiserHourList.json',
+                    url: 'https://report.simba.taobao.com/common/query/zszw/1/advertiserHourList.json',
                     dataType: 'json',
                     data: {
                         csrfID: CPS.app.csrfID,
@@ -467,7 +480,7 @@
                     type: 'get'
                 }),
                 $.ajax({
-                    url: 'http://report.simba.taobao.com/common/query/zszw/1/advertiserHourSumList.json',
+                    url: 'https://report.simba.taobao.com/common/query/zszw/1/advertiserHourSumList.json',
                     dataType: 'json',
                     data: {
                         csrfID: CPS.app.csrfID,
@@ -479,7 +492,7 @@
                     type: 'get'
                 }),
                 $.ajax({
-                    url: 'http://report.simba.taobao.com/common/query/zszw/1/advertiserHourList.json',
+                    url: 'https://report.simba.taobao.com/common/query/zszw/1/advertiserHourList.json',
                     dataType: 'json',
                     data: {
                         csrfID: CPS.app.csrfID,
@@ -495,7 +508,14 @@
                     if(a[0].info.ok && b[0].info.ok && c[0].info.ok && d[0].info.ok && e[0].info.ok){
                         var d1 = {total:b[0].data.result[0],list:c[0].data.result},
                             d2 = {total:d[0].data.result[0],list:e[0].data.result};
-                        $.ajax({
+
+                        CPS.utils.postdata("/zz/advertiserhour/source",{
+                            nick: CPS.app.nick,
+                            account: JSON.stringify(a[0].data),
+                            yesterday: JSON.stringify(d1),
+                            data: JSON.stringify(d2)
+                        });
+                      /*  $.ajax({
                             url: 'http://cps.da-mai.com/zz/advertiserhour/source.html',
                             dataType: 'json',
                             data: {
@@ -505,7 +525,7 @@
                                 data: JSON.stringify(d2)
                             },
                             type: 'post'
-                        })
+                        })*/
                     }
                 }
             })
@@ -521,7 +541,8 @@
      */
     CPS.app.rptnAdboardDayList = function(arg,fn){
 
-        var k = "adboard."+arg.effectType+arg.effect+"."+arg.startTime+"."+arg.endTime+"."+arg.offset;
+        var k = "ad"+arg.effectType+arg.effect+arg.startTime+arg.endTime+arg.offset;
+        k = k.replace(/-/g,"");
         if(CPS.mutex.is(k)){
             return false;
         }
@@ -530,7 +551,7 @@
         var r = function() {
 
             return $.ajax({
-                url: 'http://report.simba.taobao.com/common/query/zszw/1/rptCreativeList.json',
+                url: 'https://report.simba.taobao.com/common/query/zszw/1/rptCreativeList.json',
                 dataType: 'json',
                 data: {
                     csrfID:  CPS.app.csrfID,
@@ -569,7 +590,7 @@
      */
     CPS.rpt.CreativeListCount = function(arg,fn){
         $.ajax({
-            url: 'http://report.simba.taobao.com/common/count/zszw/1/rptCreativeListCount.json',
+            url: 'https://report.simba.taobao.com/common/count/zszw/1/rptCreativeListCount.json',
             dataType: 'json',
             data: {
                 csrfID:  CPS.app.csrfID,
@@ -628,8 +649,17 @@
      *
      */
     CPS.app.postRptnAboard2 = function(rpt,arg){
+
+        CPS.utils.postdata("/zz/history/adboard",{
+            data:JSON.stringify(rpt),
+            nick:CPS.app.nick,
+            logdate:arg.startTime,
+            offset:arg.offset,
+            effectType:arg.effectType,
+            effect:arg.effect
+        });
         // console.log(arg);
-        $.ajax({
+        /*$.ajax({
             url:"http://cps.da-mai.com/zz/history/adboard.html",
             type:"post",
             data:{
@@ -643,7 +673,7 @@
             dataType:"json",
             success:function(){
             }
-        })
+        })*/
     };
 
     /**
@@ -654,7 +684,8 @@
      *
      */
     CPS.app.rptnDestDayList = function(arg,fn){
-        var k = "dest."+arg.effectType+arg.effect+"."+arg.startTime+"."+arg.endTime+"."+arg.offset;
+        var k = "dest"+arg.effectType+arg.effect+arg.startTime+arg.endTime+arg.offset;
+        k = k.replace(/-/g,"");
         if(CPS.mutex.is(k)){
             return false;
         }
@@ -663,7 +694,7 @@
         var r = function() {
 
             return $.ajax({
-                url: 'http://report.simba.taobao.com/common/query/zszw/1/rptTargetList.json',
+                url: 'https://report.simba.taobao.com/common/query/zszw/1/rptTargetList.json',
                 dataType: 'json',
                 data: {
                     csrfID:  CPS.app.csrfID,
@@ -702,7 +733,7 @@
      */
     CPS.rpt.TargetListCount = function(arg,fn){
         $.ajax({
-            url: 'http://report.simba.taobao.com/common/count/zszw/1/rptTargetListCount.json',
+            url: 'https://report.simba.taobao.com/common/count/zszw/1/rptTargetListCount.json',
             dataType: 'json',
             data: {
                 csrfID:  CPS.app.csrfID,
@@ -764,7 +795,15 @@
      *
      */
     CPS.app.postRptnDest2 = function(rpt,arg){
-        $.ajax({
+        CPS.utils.postdata("/zz/history/dest",{
+            data:JSON.stringify(rpt),
+            nick:CPS.app.nick,
+            logdate:arg.startTime,
+            offset:arg.offset,
+            effectType:arg.effectType,
+            effect:arg.effect
+        });
+       /* $.ajax({
             url:"http://cps.da-mai.com/zz/history/dest.html",
             type:"post",
             data:{
@@ -778,7 +817,7 @@
             dataType:"json",
             success:function(){
             }
-        })
+        })*/
     };
 
     /**
@@ -787,7 +826,8 @@
      *
      */
     CPS.app.rptnDestAdzoneDayList = function(arg,fn){
-        var k = "destadzone."+arg.effectType+arg.effect+"."+arg.startTime+"."+arg.endTime+"."+arg.offset;
+        var k = "destad"+arg.effectType+arg.effect+arg.startTime+arg.endTime+arg.offset;
+        k = k.replace(/-/g,"");
         if(CPS.mutex.is(k)){
             return false;
         }
@@ -796,7 +836,7 @@
         var r = function() {
 
             return $.ajax({
-                url: 'http://report.simba.taobao.com/common/query/zszw/1/rptTargetAdzoneList.json',
+                url: 'https://report.simba.taobao.com/common/query/zszw/1/rptTargetAdzoneList.json',
                 dataType: 'json',
                 data: {
                     csrfID:  CPS.app.csrfID,
@@ -834,7 +874,7 @@
      */
     CPS.rpt.TargetAdzoneListCount = function(arg,fn){
         $.ajax({
-            url: 'http://report.simba.taobao.com/common/count/zszw/1/rptTargetAdzoneListCount.json',
+            url: 'https://report.simba.taobao.com/common/count/zszw/1/rptTargetAdzoneListCount.json',
             dataType: 'json',
             data: {
                 csrfID:  CPS.app.csrfID,
@@ -895,7 +935,15 @@
      *
      */
     CPS.app.postRptnDestAdzone2 = function(rpt,arg){
-        $.ajax({
+        CPS.utils.postdata("/zz/history/destadzone",{
+            data:JSON.stringify(rpt),
+            nick:CPS.app.nick,
+            logdate:arg.startTime,
+            offset:arg.offset,
+            effectType:arg.effectType,
+            effect:arg.effect
+        });
+       /* $.ajax({
             url:"http://cps.da-mai.com/zz/history/destadzone.html",
             type:"post",
             data:{
@@ -909,7 +957,7 @@
             dataType:"json",
             success:function(){
             }
-        })
+        })*/
     };
 
     /**
@@ -918,7 +966,8 @@
      *
      */
     CPS.app.rptnAdzoneDayList = function(arg,fn){
-        var k = "adzone."+arg.effectType+arg.effect+"."+arg.startTime+"."+arg.endTime+"."+arg.offset;
+        var k = "adzone"+arg.effectType+arg.effect+arg.startTime+arg.endTime+arg.offset;
+        k = k.replace(/-/g,"");
         if(CPS.mutex.is(k)){
             return false;
         }
@@ -927,7 +976,7 @@
         var r = function() {
 
             return $.ajax({
-                url: 'http://report.simba.taobao.com/common/query/zszw/1/rptAdzoneList.json',
+                url: 'https://report.simba.taobao.com/common/query/zszw/1/rptAdzoneList.json',
                 dataType: 'json',
                 data: {
                     csrfID:  CPS.app.csrfID,
@@ -965,7 +1014,7 @@
      */
     CPS.rpt.AdzoneListCount = function(arg,fn){
         $.ajax({
-            url: 'http://report.simba.taobao.com/common/count/zszw/1/rptAdzoneListCount.json',
+            url: 'https://report.simba.taobao.com/common/count/zszw/1/rptAdzoneListCount.json',
             dataType: 'json',
             data: {
                 csrfID:  CPS.app.csrfID,
@@ -1024,7 +1073,15 @@
      *
      */
     CPS.app.postRptnAdzone2 = function(rpt,arg){
-        $.ajax({
+        CPS.utils.postdata("/zz/history/adzone",{
+            data:JSON.stringify(rpt),
+            nick:CPS.app.nick,
+            logdate:arg.startTime,
+            offset:arg.offset,
+            effectType:arg.effectType,
+            effect:arg.effect
+        });
+       /* $.ajax({
             url:"http://cps.da-mai.com/zz/history/adzone.html",
             type:"post",
             data:{
@@ -1038,7 +1095,7 @@
             dataType:"json",
             success:function(){
             }
-        })
+        })*/
     };
 
     /**
@@ -1047,7 +1104,7 @@
      */
     CPS.app.findCampaignList = function(fn){
         $.ajax({
-            url:"http://zuanshi.taobao.com/mooncampaign/findCampaignList.json",
+            url:"https://zuanshi.taobao.com/mooncampaign/findCampaignList.json",
             type:"post",
             data:{
                 csrfID: CPS.app.csrfID,
@@ -1083,7 +1140,7 @@
                 var curDate = format.formatCurrentDate("yyyy-MM-dd");
 
                 $.ajax({
-                    url:"http://report.simba.taobao.com/common/query/zszw/1/campaignHourSumList.json",
+                    url:"https://report.simba.taobao.com/common/query/zszw/1/campaignHourSumList.json",
                     type:"get",
                     dataType:"json",
                     data: {
@@ -1097,7 +1154,12 @@
                     },
                     success:function(resp){
                         if(resp && resp.info && resp.info.ok){
-                            $.ajax({
+                            CPS.utils.postdata("/zuanshi/campaign/source",{
+                                nick: CPS.app.nick,
+                                data: JSON.stringify(list),
+                                rptdata: JSON.stringify(resp.data.result)
+                            });
+                            /*$.ajax({
                                 url: "http://cps.da-mai.com/zuanshi/campaign/source.html",
                                 type: "post",
                                 dataType: "json",
@@ -1106,7 +1168,7 @@
                                     data: JSON.stringify(list),
                                     rptdata: JSON.stringify(resp.data.result)
                                 }
-                            });
+                            });*/
                         }
 
                     }
@@ -1187,7 +1249,7 @@
             }];
 
             $.ajax({
-                url: 'http://zuanshi.taobao.com/adgroup/createAdgroup.json',
+                url: 'https://zuanshi.taobao.com/adgroup/createAdgroup.json',
                 dataType: 'json',
                 data: {csrfID: CPS.app.csrfID,trans:JSON.stringify(trans)},
                 type: 'post',
@@ -1242,7 +1304,7 @@
             }];
 
             $.ajax({
-                url: 'http://zuanshi.taobao.com/adgroup/createAdgroup.json',
+                url: 'https://zuanshi.taobao.com/adgroup/createAdgroup.json',
                 dataType: 'json',
                 data: {csrfID: CPS.app.csrfID,trans:JSON.stringify(trans)},
                 type: 'post',
@@ -1285,7 +1347,7 @@
             "matrixPriceBatchVOList":[{"targetId":crowd.targetId,"targetType":crowd.targetType,"bidPrice":bidPrice}]
         });
         $.ajax({
-            url: 'http://zuanshi.taobao.com/adgroup/bind/updateAllAdzoneBind.json',
+            url: 'https://zuanshi.taobao.com/adgroup/bind/updateAllAdzoneBind.json',
             dataType: 'json',
             data: {
                 csrfID: CPS.app.csrfID,
@@ -1344,7 +1406,7 @@
 
 
             $.ajax({
-                url: 'http://zuanshi.taobao.com/adgroup/bind/updateAllAdzoneBind.json',
+                url: 'https://zuanshi.taobao.com/adgroup/bind/updateAllAdzoneBind.json',
                 dataType: 'json',
                 data: {
                     csrfID: CPS.app.csrfID,
@@ -1381,7 +1443,7 @@
         var transId = crowd.transId,targetId = crowd.targetId,targetType = crowd.targetType;
 
         $.ajax({
-            url: 'http://zuanshi.taobao.com/matrixprice/getTransXTargetXAdzoneByCrowd.json',
+            url: 'https://zuanshi.taobao.com/matrixprice/getTransXTargetXAdzoneByCrowd.json',
             dataType: 'json',
             data: {
                 csrfID: CPS.app.csrfID,
@@ -1413,7 +1475,7 @@
      */
     CPS.app.getTransXTargetXAdzoneByAdzone = function(a,fn,err){
         $.ajax({
-            url: 'http://zuanshi.taobao.com/matrixprice/getTransXTargetXAdzoneByCrowd.json',
+            url: 'https://zuanshi.taobao.com/matrixprice/getTransXTargetXAdzoneByCrowd.json',
             dataType: 'json',
             data: {
                 csrfID: CPS.app.csrfID,
@@ -1444,7 +1506,7 @@
      */
     CPS.app.unbindAdzones = function(adgroupBindAdzoneVOList,fn,err){
         $.ajax({
-            url: 'http://zuanshi.taobao.com/adgroup/bind/unbindAdzones.json',
+            url: 'https://zuanshi.taobao.com/adgroup/bind/unbindAdzones.json',
             dataType: 'json',
             data: {csrfID: CPS.app.csrfID,adgroupBindAdzoneVOList:JSON.stringify(adgroupBindAdzoneVOList)},
             type: 'post',
@@ -1474,7 +1536,7 @@
         var t = parseInt(Math.random()*1000+200);
         setTimeout(function () {
             $.ajax({
-                url: 'http://zuanshi.taobao.com/adgroup/bind/bindAdboard.json',
+                url: 'https://zuanshi.taobao.com/adgroup/bind/bindAdboard.json',
                 dataType: 'json',
                 data: {csrfID: CPS.app.csrfID,transId:transId,adboardIdList:adboardIds},
                 type: 'post',
@@ -1501,7 +1563,7 @@
     CPS.app.batchModifyMatrixPrice = function(matrixPriceBatchVOList){
         setTimeout(function () {
             $.ajax({
-                url: 'http://zuanshi.taobao.com/matrixprice/batchModifyMatrixPrice.json',
+                url: 'https://zuanshi.taobao.com/matrixprice/batchModifyMatrixPrice.json',
                 dataType: 'json',
                 data: {
                     csrfID: CPS.app.csrfID,
@@ -1530,7 +1592,7 @@
     CPS.app.shopInfo2 = function(nicknames,fn){
         setTimeout(function () {
             $.ajax({
-                url: 'http://zuanshi.taobao.com/trans/isHavingShop.json',
+                url: 'https://zuanshi.taobao.com/trans/isHavingShop.json',
                 dataType: 'json',
                 data: {csrfID: CPS.app.csrfID, nicknames: nicknames},
                 type: 'post',
@@ -1551,7 +1613,14 @@
      */
     CPS.app.getSetting = function(fn,err){
 
-        $.ajax({
+        chrome.extension.sendMessage({type: "ZUANSHISETTINGDATA",nick:CPS.app.nick},function(resp){
+           // console.log(resp);
+            if(resp.isSuccess && resp.data){
+                fn(resp.data);
+            }
+        });
+
+        /*$.ajax({
             url: 'http://cps.da-mai.com/zuanshi/setting/get.html',
             dataType: 'json',
             data: {nick:  CPS.app.nick},
@@ -1563,7 +1632,7 @@
             },error:function(){
                 err();
             }
-        });
+        });*/
     };
 
 
@@ -1578,7 +1647,7 @@
     CPS.app.findAdgroupList = function(campaignId,page){
         var offset = (page-1)*40;
         return $.ajax({
-            url: 'http://zuanshi.taobao.com/adgroup/findAdgroupList.json',
+            url: 'https://zuanshi.taobao.com/adgroup/findAdgroupList.json',
             dataType: 'json',
             data: {csrfID: CPS.app.csrfID, campaignId: campaignId,tab:"detail",campaignModel:1,status:25,page:page,offset:offset,pageSize:40},
             type: 'post'
@@ -1597,7 +1666,7 @@
 
         var offset = (page-1)*40;
         return $.ajax({
-            url: 'http://zuanshi.taobao.com/horizontalManage/findCrowdList.json',
+            url: 'https://zuanshi.taobao.com/horizontalManage/findCrowdList.json',
             dataType: 'json',
             data: {csrfID: CPS.app.csrfID, campaignId: campaignId,campaignModel:1,tab:"unit_detail_target_list",page:page,offset:offset,pageSize:40},
             type: 'post'
@@ -1619,7 +1688,7 @@
         var t = parseInt(Math.random()*1000+offset*10);
         setTimeout(function(){
             $.ajax({
-                url: 'http://zuanshi.taobao.com/horizontalManage/findAdzoneList.json',
+                url: 'https://zuanshi.taobao.com/horizontalManage/findAdzoneList.json',
                 dataType: 'json',
                 data: {
                     csrfID: CPS.app.csrfID,
@@ -1657,7 +1726,7 @@
      */
     CPS.app.findAdboardList = function(campaignId,transId,fn,err){
         $.ajax({
-            url: ' http://zuanshi.taobao.com/horizontalManage/findAdboardList.json',
+            url: ' https://zuanshi.taobao.com/horizontalManage/findAdboardList.json',
             dataType: 'json',
             data: {csrfID: CPS.app.csrfID, campaignId:campaignId,transId: transId,tab:"unit_detail_creative_list",campaignModel:1,offset:0,pageSize:40,index:1},
             type: 'post',
@@ -1798,7 +1867,7 @@
         var aboard = [{"adboardId":adboardId,"transId":transId}];
         setTimeout(function () {
             $.ajax({
-                url: 'http://zuanshi.taobao.com/horizontalManage/unbindAdboard.json',
+                url: 'https://zuanshi.taobao.com/horizontalManage/unbindAdboard.json',
                 dataType: 'json',
                 data: {csrfID: CPS.app.csrfID,adboardList:JSON.stringify(aboard)},
                 type: 'post',
@@ -1847,7 +1916,7 @@
         pager.offset = (pager.index-1)* pager.pageSize;
         setTimeout(function () {
             $.ajax({
-                url: ' http://zuanshi.taobao.com/adzone/findAdzoneList.json',
+                url: ' https://zuanshi.taobao.com/adzone/findAdzoneList.json',
                 dataType: 'json',
                 data: {csrfID: CPS.app.csrfID,queryAdzoneParamStr:JSON.stringify(pager)},
                 type: 'post',
@@ -1882,7 +1951,13 @@
             return d;
         }
 
-        $.ajax({
+        chrome.extension.sendMessage({type: "ZUANSHIADZONEDATA"},function(resp){
+
+            CPS.storage.set("adzone.list.data",resp.data);
+            return resp.data;
+
+        });
+       /* $.ajax({
             url: ' http://cps.da-mai.com/zuanshi/adzone/list.html',
             dataType: 'json',
             async:false,
@@ -1892,7 +1967,7 @@
                 CPS.storage.set("adzone.list.data",resp.data);
                 return resp.data;
             }
-        });
+        });*/
     };
 
 
@@ -1929,14 +2004,14 @@
      * @param offset
      * @returns {*|{requires}}
      */
-    CPS.board.findAdboardList = function(offset){
-        if(CPS.mutex.is("aboard.package."+offset))
+    CPS.board.findList = function(offset){
+        if(CPS.mutex.is("ap"+offset))
             return false;
 
         var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
             $.ajax({
-                url:"http://zuanshi.taobao.com/aboard_package/find.json",
+                url:"https://zuanshi.taobao.com/aboard_package/find.json",
                 dataType: 'json',
                 data: {
                     csrfID: CPS.app.csrfID,
@@ -1955,9 +2030,14 @@
                 success:function(resp){
                     if(resp.data && resp.data.list){
 
-                        CPS.mutex.lock("aboard.package."+offset);
+                        CPS.mutex.lock("ap"+offset);
 
-                        $.ajax({
+                        CPS.utils.postdata("/zuanshi/aboardpackage/source",{
+                            nick:CPS.app.nick,
+                            data:JSON.stringify(resp.data.list)
+                        });
+
+                       /* $.ajax({
                             url:"http://cps.da-mai.com/zuanshi/aboardpackage/source.html",
                             dataType: 'json',
                             data: {
@@ -1965,7 +2045,7 @@
                                 data:JSON.stringify(resp.data.list)
                             },
                             type: 'post'
-                        })
+                        })*/
 
                     }
                 }
@@ -1978,7 +2058,7 @@
      */
     CPS.board.findAdboardAll = function(){
         $.when($.ajax({
-            url:"http://zuanshi.taobao.com/aboard_package/find.json",
+            url:"https://zuanshi.taobao.com/aboard_package/find.json",
             dataType: 'json',
             data: {
                 csrfID: CPS.app.csrfID,
@@ -1996,7 +2076,7 @@
             type: 'get'})).then(function(a){
             if(a.data && a.data.list && a.data.count>0){
                 for(var i=0;i<= a.data.count;i+=40){
-                    CPS.board.findAdboardList(i);
+                    CPS.board.findList(i);
                 }
 
             }

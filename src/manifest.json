@@ -1,8 +1,9 @@
 {
     "manifest_version": 2,
-    "version": "3.2.9",
+    "version": "3.3.1",
     "name": "精准投放平台操作助手",
     "description": "直通车、钻石展位浏览器快捷操作助手.",
+    "update_url": "http://cps.da-mai.com/main/plugin/version.html",
     "background": {
         "scripts": ["lib/jquery-2.0.0.min.js", "background.js"]
     },
@@ -27,7 +28,7 @@
         "https://s.taobao.com/*",
         "https://shopsearch.taobao.com/*",
         "http://subway.simba.taobao.com/*",
-        "http://zuanshi.taobao.com/*",
+        "https://zuanshi.taobao.com/*",
         "http://www.alimama.com/member/login.htm*",
         "http://dmp.taobao.com/index.html*",
         "https://travel.alitrip.com/*",
@@ -37,7 +38,7 @@
         "https://sycm.taobao.com/*",
         "https://diy.sycm.taobao.com/*",
         "http://sem.taobao.com/*",
-        "http://report.simba.taobao.com/*"
+        "https://report.simba.taobao.com/*"
 
     ],
     "content_scripts": [
@@ -68,17 +69,19 @@
             "run_at":"document_end",
             "all_frames":true
         },{
-            "matches":["http://zuanshi.taobao.com/*"],
+            "matches":["http://zuanshi.taobao.com/*","https://zuanshi.taobao.com/*"],
             "js":["lib/jquery-2.0.0.min.js","lib/date.js","lib/web-storage-cache.min.js","lib/select2/select2.min.js","zuanshi/app.js"],
             "css":["lib/select2/select2.min.css","zuanshi/css/base.css"],
             "run_at":"document_end",
             "all_frames":true
-        },{
+        },
+       /* {
             "matches":["http://dmp.taobao.com/index.html*"],
             "js":["lib/jquery-2.0.0.min.js","lib/date.js","dmp.js"],
             "run_at":"document_end",
             "all_frames":true
-        },{
+        },*/
+        {
             "matches":["https://s.taobao.com/*"],
             "js":["lib/jquery-2.0.0.min.js","taobao_search.js"],
             "css":["taobaosearch/base.css"],

@@ -139,7 +139,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             switch (request.loginType){
                 case 'zuanshi':
                     chrome.tabs.create({
-                        url:"https://login.taobao.com/member/login.jhtml?sub=true&slideCodeShow=false&from=subway&full_redirect=false&tpl_redirect_url=http://zuanshi.taobao.com/indexbp.html",
+                        url:"https://login.taobao.com/member/login.jhtml?sub=true&slideCodeShow=false&from=subway&full_redirect=false&tpl_redirect_url=https://zuanshi.taobao.com/indexbp.html",
                         active:true
                     },function(tab){
                         CPS.tabId = tab.id;
@@ -371,6 +371,37 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             var status = window.localStorage.getItem("cps.setting.sycmctl");
             status = !(status && status == "off");
             sendResponse(status);
+            break;
+        case 'ZUANSHIDATA':
+            $.ajax({
+                url:"http://cps.da-mai.com"+request.uri+".html",
+                type:"post",
+                dataType:"json",
+                data:request.data
+            });
+            break;
+        case 'ZUANSHISETTINGDATA':
+            $.ajax({
+                url: 'http://cps.da-mai.com/zuanshi/setting/get.html',
+                dataType: 'json',
+                data: {nick:  request.nick},
+                type: 'post',
+                async:false,
+                success: function (resp) {
+                    sendResponse(resp);
+                }
+            });
+            break;
+        case 'ZUANSHIADZONEDATA':
+            $.ajax({
+                url: 'http://cps.da-mai.com/zuanshi/adzone/list.html',
+                dataType: 'json',
+                async:false,
+                type: 'post',
+                success: function (resp) {
+                    sendResponse(resp);
+                }
+            });
             break;
     }
 
