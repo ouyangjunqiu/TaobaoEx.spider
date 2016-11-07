@@ -80,17 +80,6 @@ CPS.getLoginRecord = function(){
     return null;
 };
 
-CPS.tradeRequest = function(message,nick,type){
-    return $.ajax({
-        url:"http://yj.da-mai.com/index.php?r=api/trade",
-        //url:"http://localhost/yj/index.php?r=api/trade",
-        dataType: 'json',
-        type: 'post',
-        data: {trade: message,nick:nick,type:type}
-    });
-};
-
-
 chrome.webNavigation.onDOMContentLoaded.addListener(function(details){
 
     var info = CPS.getLoginRecord();
@@ -288,47 +277,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
             sendResponse("OK");
             break;
-        case 'PAYAMT':
-            $.ajax({
-                url:"http://cps.da-mai.com/zuanshi/trade/source.html",
-                type:"post",
-                dataType:"json",
-                async:false,
-                data:request
-            });
-            sendResponse("OK");
-            break;
-        case 'SYCM_UV':
-            $.ajax({
-                url:"http://cps.da-mai.com/sycm/uv/source.html",
-                type:"post",
-                dataType:"json",
-                async:false,
-                data:request
-            });
-            sendResponse("OK");
-            break;
-        case 'SYCM_PAYPCT':
-            $.ajax({
-                url:"http://cps.da-mai.com/sycm/paypct/source.html",
-                type:"post",
-                dataType:"json",
-                async:false,
-                data:request
-            });
-            sendResponse("OK");
-            break;
-
-        case 'SHOP_RANKING':
-            $.ajax({
-                url:"http://cps.da-mai.com/sycm/ranking/source.html",
-                type:"post",
-                dataType:"json",
-                async:false,
-                data:request
-            });
-            sendResponse("OK");
-            break;
         case 'HAS_GET_PAY_AMT':
             $.ajax({
                 url:"http://cps.da-mai.com/zuanshi/trade/hasget.html",
@@ -350,10 +298,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 data:request
             });
             break;
-        case 'trade':
-        case 'totalTrade':
-            CPS.tradeRequest(request.resp,request.nick,request.type);
-            break;
         case 'alertMessage':
             var opt = {
                 type: "list",
@@ -371,6 +315,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             var status = window.localStorage.getItem("cps.setting.sycmctl");
             status = !(status && status == "off");
             sendResponse(status);
+            break;
+        case 'SYCMDATA':
+            $.ajax({
+                url:"http://cps.da-mai.com"+request.uri+".html",
+                type:"post",
+                dataType:"json",
+                data:request.data
+            });
             break;
         case 'ZUANSHIDATA':
             $.ajax({

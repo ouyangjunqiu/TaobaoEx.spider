@@ -312,7 +312,7 @@
                 },t);
             };
 
-            for(var i=-4;i<=-2;i++){
+            for(var i=-5;i<=-1;i++){
                 r3(i);
             }
 
@@ -324,7 +324,7 @@
                 r15(k);
             }
 
-        },18000);
+        },6000);
 
     };
 
@@ -1278,6 +1278,7 @@
      * @param dmp
      */
     CPS.adgroup.createByDmp = function(dmp){
+        var t = Math.random()*4000+500;
         setTimeout(function () {
             var format = new DateFormat();
             var dateStr = format.formatCurrentDate("yyyyMMdd");
@@ -1285,6 +1286,8 @@
             trans.campaignId = CPS.app.campaignid;
             trans.transName = dmp.targetName+"_"+dateStr;
             trans.transAdzoneBinds = [];
+            trans.intelligentBid = 1;
+            trans.frequency = -1;
             for(var i in CPS.app.adzone){
                 var a = CPS.app.adzone[i];
                 trans.transAdzoneBinds.push({"adzoneId":a.adzoneId,"adzoneType":a.type});
@@ -1325,7 +1328,7 @@
                 }
             })
 
-        }, 1000);
+        }, t);
     };
 
     /**
