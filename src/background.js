@@ -277,19 +277,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
             sendResponse("OK");
             break;
-        case 'HAS_GET_PAY_AMT':
-            $.ajax({
-                url:"http://cps.da-mai.com/zuanshi/trade/hasget.html",
-                type:"post",
-                dataType:"json",
-                async:false,
-                data:{nick:request.nick},
-                success:function(data){
-                    sendResponse(data);
-                }
-            });
-
-            break;
         case 'SHOP_CLOUD_UPDATE':
             $.ajax({
                 url:"http://cps.da-mai.com/main/shop/cloudupdate.html",
@@ -314,7 +301,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case 'SETTING_SYCMCTL':
             var status = window.localStorage.getItem("cps.setting.sycmctl");
             status = !(status && status == "off");
-            sendResponse(status);
+            if(status){
+                $.ajax({
+                    url:"http://cps.da-mai.com/sycm/trade/hasget.html",
+                    type:"post",
+                    dataType:"json",
+                    async:false,
+                    data:{nick:request.nick},
+                    success:function(resp){
+                        sendResponse(resp);
+                    }
+                });
+            }
             break;
         case 'SYCMDATA':
             $.ajax({

@@ -23,7 +23,7 @@
             success: function (resp) {
                 console.log(resp);
                 if(resp && resp.data && resp.data.payAmt) {
-                    CPS.sycm.postdata("/zuanshi/trade/source",{
+                    CPS.sycm.postdata("/sycm/trade/source",{
                         payAmt: JSON.stringify(resp.data.payAmt),
                         nick: CPS.sycm.nick,
                         usernumid: m.runAsUserId,
@@ -159,18 +159,13 @@
             console.log(CPS.sycm.nick,CPS.sycm.shopname,shopcatname);
             chrome.extension.sendMessage({shopname: CPS.sycm.shopname,usernumid:m.mainUserId,nick:CPS.sycm.nick,shopcatname:shopcatname,type: 'SHOP_CLOUD_UPDATE'});
 
-            chrome.extension.sendMessage({type: "SETTING_SYCMCTL"},function(resp){
-                if(resp){
-                    chrome.extension.sendMessage({nick: CPS.sycm.shopname, type: 'HAS_GET_PAY_AMT'}, function (resp) {
-                        if (!resp.hasget) {
-                            CPS.sycm.getShopTrade();
-                            CPS.sycm.getShopUv();
-                            CPS.sycm.getShopPaypct();
-                            CPS.sycm.getShopRanking();
-                        }
-                    });
-                }
-
+            chrome.extension.sendMessage({type: "SETTING_SYCMCTL",nick: CPS.sycm.shopname},function(resp){
+                  if (resp && !resp.hasget) {
+                      CPS.sycm.getShopTrade();
+                      CPS.sycm.getShopUv();
+                      CPS.sycm.getShopPaypct();
+                      CPS.sycm.getShopRanking();
+                  }
             });
         }else {
             setTimeout(function() {CPS.sycm.run()},2000);
