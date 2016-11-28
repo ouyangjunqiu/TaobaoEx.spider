@@ -180,6 +180,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         CPS.saveTab(tab.id);
                     });
                     break;
+                case 'myseller':
+                    chrome.tabs.create({
+                        url:"https://login.taobao.com/member/login.jhtml?from=taobaoindex&f=top&style=&sub=true&redirect_url=https%3A%2F%2Fmyseller.taobao.com%2Fseller_admin.htm",
+                        active:true
+                    },function(tab){
+                        CPS.tabId = tab.id;
+                        CPS.saveTab(tab.id);
+                    });
+                    break;
                 default :
                     chrome.tabs.create({
                         url:"https://login.taobao.com/member/login.jhtml",
@@ -295,8 +304,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     { title: request.title, message: request.message }
                 ]
             };
-            chrome.notifications.create('',opt,function(id){
-            });
+            chrome.notifications.create('',opt,function(id){});
             break;
         case 'SETTING_SYCMCTL':
             var status = window.localStorage.getItem("cps.setting.sycmctl");

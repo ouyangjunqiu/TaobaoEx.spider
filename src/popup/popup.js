@@ -3,26 +3,9 @@
  */
 
 var loginTypeText = function(type){
-    var text = "未知";
-    switch(type){
-        case 'zuanshi':
-            return "钻石展位";
-            break;
-        case 'shenyicanmou':
-            return "生意参谋";
-            break;
-        case 'zhitongche':
-            return "直通车";
-            break;
-        case 'dmp':
-            return "达摩盘";
-            break;
-        case 'branding':
-            return "品销宝";
-            break;
+    var o = {"zuanshi":"钻石展位","shenyicanmou":"生意参谋","zhitongche":"直通车","dmp":"达摩盘","branding":"品销宝","myseller":"卖家中心"};
 
-    }
-    return text;
+    return o[type] || "未知";
 };
 
 $(document).ready(function(){

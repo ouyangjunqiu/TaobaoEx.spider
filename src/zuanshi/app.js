@@ -134,38 +134,38 @@
                 dataType: 'jsonp',
                 jsonpCallback: 'jsonp29',
                 success: function (resp) {
-                    CPS.app.csrfID = resp.data.csrfID;
-                    CPS.app.rptToken = resp.data.rptToken;
-                    CPS.app.loginUser = resp.data.loginUser;
-                    CPS.app.shopId = resp.data.loginUser.shopId;
-                    CPS.app.productId = resp.data.productPermission.productZuanshi.productId;
-                    CPS.app.postUser();
+                    if(resp.data && resp.data.loginUser && resp.data.loginUser.shopId){
+                        CPS.app.csrfID = resp.data.csrfID;
+                        CPS.app.rptToken = resp.data.rptToken;
+                        CPS.app.loginUser = resp.data.loginUser;
+                        CPS.app.shopId = resp.data.loginUser.shopId;
+                        CPS.app.productId = resp.data.productPermission.productZuanshi.productId;
+                        CPS.app.postUser();
 
-                    CPS.layout.window();
-                    CPS.mutex.load(CPS.app.shopId);
-                    CPS.mutex.auto(CPS.app.shopId);
+                        CPS.layout.window();
+                        CPS.mutex.load(CPS.app.shopId);
+                        CPS.mutex.auto(CPS.app.shopId);
 
-                    var f = new DateFormat();
-                    var h = f.formatCurrentDate("HH");
+                        var f = new DateFormat();
+                        var h = f.formatCurrentDate("HH");
 
-                    h = parseInt(h);
-                    if(h>=8 && h<=23){
-                        CPS.rpt.AdvertiserHour();
-                        CPS.app.campaignRptnToday();
+                        h = parseInt(h);
+                        if(h>=8 && h<=23){
+                            CPS.rpt.AdvertiserHour();
+                            CPS.app.campaignRptnToday();
 
-                        CPS.app.run();
+                            CPS.app.run();
+                        }
+
+                        CPS.campaign.alert();
+                        // CPS.board.alert();
+                        setTimeout(function(){
+                            CPS.board.findAdboardAll();
+
+                            CPS.dmp.get();
+                        },10000);
+
                     }
-
-
-
-                    CPS.campaign.alert();
-                    // CPS.board.alert();
-                    setTimeout(function(){
-                        CPS.board.findAdboardAll();
-
-                        CPS.dmp.get();
-                    },10000);
-
                 }
             });
         }, 1000);
