@@ -68,7 +68,8 @@
      *
      * @param id
      */
-    CPS.mutex.auto = function(id){
+    CPS.mutex.init = function(id){
+        CPS.mutex.load(id);
         CPS.mutex.hwnd = setInterval(function(){
            CPS.mutex.save(id);
        },1000);
@@ -139,20 +140,18 @@
                         CPS.app.rptToken = resp.data.rptToken;
                         CPS.app.loginUser = resp.data.loginUser;
                         CPS.app.shopId = resp.data.loginUser.shopId;
-                        CPS.app.productId = resp.data.productPermission.productZuanshi.productId;
+                        CPS.app.productPermission = resp.data.productPermission;
+
                         CPS.app.postUser();
 
                         CPS.layout.window();
-                        CPS.mutex.load(CPS.app.shopId);
-                        CPS.mutex.auto(CPS.app.shopId);
+                        CPS.mutex.init(CPS.app.shopId);
 
                         var f = new DateFormat();
                         var h = f.formatCurrentDate("HH");
 
                         h = parseInt(h);
                         if(h>=8 && h<=23){
-                            CPS.rpt.AdvertiserHour();
-                            CPS.app.campaignRptnToday();
 
                             CPS.app.run();
                         }
@@ -245,15 +244,25 @@
         CPS.utils.postdata("/main/shop/cloudupdate",{nick:  CPS.app.nick,userid:CPS.app.loginUser.userId,shopid:CPS.app.loginUser.shopId,usernumid:CPS.app.loginUser.userNumId});
     };
 
-    /**
-     * 运行
-     * @version 3.2.1
-     */
-    CPS.app.run = function () {
 
-        CPS.app.rptnAdvertiser("click",3);
-        CPS.app.rptnAdvertiser("click",7);
-        CPS.app.rptnAdvertiser("click",15);
+    /**
+     * 智钻运行
+     * @version 3.3.3
+     * @returns {boolean}
+     */
+    CPS.app.runZuanshi = function(){
+
+        var p = CPS.app.productPermission["productZuanshi"];
+        if(!(p && p["productId"]))
+            return false;
+
+        CPS.app.productId = p.productId;
+        CPS.rpt.AdvertiserHour();
+        CPS.rpt.campaignToday();
+
+        CPS.rpt.advertiserHistory("click",3);
+        CPS.rpt.advertiserHistory("click",7);
+        CPS.rpt.advertiserHistory("click",15);
 
         setTimeout(function(){
 
@@ -311,11 +320,41 @@
     };
 
     /**
-     *  获取展示网络报表
-     *  @version 3.1.2
+     * 单品运行
+     * @version 3.3.3
+     * @returns {boolean}
      */
-    CPS.app.rptnAdvertiser = function (effectType,effect) {
-        if(CPS.mutex.is("z"+effectType+effect)) return false;
+    CPS.app.runItemCpc = function(){
+
+        var p = CPS.app.productPermission["productItemCpc"];
+        if(!(p && p["productId"]))
+            return false;
+
+        CPS.rpt.advertiser4History("click",3);
+        CPS.rpt.advertiser4History("click",7);
+        CPS.rpt.advertiser4History("click",15);
+    };
+
+    /**
+     * 运行
+     * @version 3.3.3
+     */
+    CPS.app.run = function () {
+
+        CPS.app.runZuanshi();
+
+        CPS.app.runItemCpc();
+
+    };
+
+    /**
+     *  获取全店推广报表
+     *  @version 3.3.3
+     */
+    CPS.rpt.advertiserHistory = function (effectType,effect) {
+
+        if(CPS.mutex.is("z"+effectType+effect))
+            return false;
 
         var t = parseInt(Math.random()*500+500);
         setTimeout(function () {
@@ -326,12 +365,15 @@
             $.ajax({
                 url: 'https://report.simba.taobao.com/common/query/zszw/1/rptAdvertiserDayList.json',
                 dataType: 'json',
-                //   jsonpCallback: 'jsonp53258',
-                data: {csrfID:  CPS.app.csrfID,token:CPS.app.rptToken,productId:CPS.app.productId, startTime: b, endTime: e, campaignModel: 1,effectType:effectType,effect:effect},
+                data: {csrfID:  CPS.app.csrfID,token:CPS.app.rptToken,productId:CPS.app.productPermission["productZuanshi"].productId, startTime: b, endTime: e, campaignModel: 1,effectType:effectType,effect:effect},
                 type: 'get',
                 success: function (resp) {
-                    CPS.app.postAdvertiserRpt(effectType,effect,resp.data.result);
-                    // console.log(resp);
+                    if(resp && resp.info && resp.info.ok){
+                        var data = resp.data.result;
+
+                        CPS.utils.postdata("/zz/advertiserrpt/source",{effectType: effectType, effect:effect, data: JSON.stringify(data), nick: CPS.app.nick});
+                        CPS.mutex.lock("z"+effectType+effect);
+                    }
                 }
             });
 
@@ -340,19 +382,39 @@
     };
 
     /**
-     * 提交展示网络报表到平台
-     * @version 3.1.2
+     *  获取单品推广报表
+     *  @version 3.3.3
      */
-    CPS.app.postAdvertiserRpt = function (effectType,effect,data) {
-        var t = parseInt(Math.random()*500+500);
-        setTimeout(function () {
-            CPS.mutex.lock("z"+effectType+effect);
+    CPS.rpt.advertiser4History = function (effectType,effect) {
 
-            CPS.utils.postdata("/zz/advertiserrpt/source",{effectType: effectType, effect:effect, data: JSON.stringify(data), nick: CPS.app.nick});
+        if(CPS.mutex.is("z4"+effectType+effect))
+            return false;
+
+        var t = parseInt(Math.random()*500+1000);
+        setTimeout(function () {
+            var f = new DateFormat();
+            var e = f.addDays(new Date(), -1, "yyyy-MM-dd");
+            var b = f.addDays(new Date(), -16, "yyyy-MM-dd");
+
+            $.ajax({
+                url: 'https://report.simba.taobao.com/common/query/zszw/1/rptAdvertiserDayList.json',
+                dataType: 'json',
+                data: {csrfID:  CPS.app.csrfID,token:CPS.app.rptToken,productId:CPS.app.productPermission["productItemCpc"].productId, startTime: b, endTime: e, campaignModel: 4,effectType:effectType,effect:effect},
+                type: 'get',
+                success: function (resp) {
+
+                    if(resp && resp.info && resp.info.ok){
+                        var data = resp.data.result;
+
+                        CPS.utils.postdata("/zz/advertiserrpt4/source",{effectType: effectType, effect:effect, data: JSON.stringify(data), nick: CPS.app.nick});
+                        CPS.mutex.lock("z4"+effectType+effect);
+                    }
+                }
+            });
+
 
         }, t);
     };
-
     /**
      * 获取实时数据
      * @version 3.2.1
@@ -971,7 +1033,7 @@
      * 获取计划报表
      * @version 3.2.1
      */
-    CPS.app.campaignRptnToday = function(){
+    CPS.rpt.campaignToday = function(){
         CPS.app.findCampaignList(function(data){
             if(data && data.list) {
                 var list = data.list;
@@ -1743,10 +1805,12 @@
                 dataType: 'json',
                 data: {csrfID: CPS.app.csrfID,queryAdzoneParamStr:JSON.stringify(pager)},
                 type: 'post',
-                success: function (data) {
-                    if(data.data && data.data.list){
-                        for(var i in data.data.list){
-                            CPS.app.updateAdzone(data.data.list[i]);
+                success: function (resp) {
+                    if(resp.data && resp.data.list){
+                        for(var i in resp.data.list){
+                            var data = resp.data.list[i];
+
+                            CPS.utils.postdata("/zuanshi/adzone/update",{adzone: JSON.stringify(data)});
                         }
 
                     }
@@ -1754,19 +1818,7 @@
             });
         }, 1000);
     };
-
-    CPS.app.updateAdzone = function(adzone){
-
-        $.ajax({
-            url: 'http://cps.da-mai.com/zuanshi/adzone/update.html',
-            dataType: 'json',
-            data: {adzone: JSON.stringify(adzone)},
-            type: 'post',
-            success: function (data) {
-                console.log(data);
-            }
-        });
-    };
+    
 
     CPS.adzone.get = function(){
         var d = CPS.storage.get("adzone.list.data");
