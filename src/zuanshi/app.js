@@ -1818,7 +1818,7 @@
             });
         }, 1000);
     };
-    
+
 
     CPS.adzone.get = function(){
         var d = CPS.storage.get("adzone.list.data");
