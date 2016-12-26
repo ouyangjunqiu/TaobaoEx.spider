@@ -133,10 +133,12 @@
     };
 
     CPS.sycm.init = function(){
-        var n = $(".ebase-Frame__shopLogin .ebase-Frame__shopName>span")[1];
+        var n = $(".ebase-Frame__shopLogin .ebase-Frame__shopName");
 
         if(n){
-            CPS.sycm.nick = $(n).text().split(":")[0].trim();
+            var k = $(n).text().split(":")[0];
+            CPS.sycm.nick = k.replace("你好，","").trim();
+
             CPS.sycm.microdata();
             var m = CPS.sycm.micro;
 

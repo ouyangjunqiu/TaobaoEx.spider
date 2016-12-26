@@ -1177,10 +1177,14 @@
         var t = Math.random()*4000+500;
         setTimeout(function () {
             var format = new DateFormat();
-            var dateStr = format.formatCurrentDate("yyyyMMdd");
+            var dateStr = format.formatCurrentDate("MMdd");
             var trans = {};
             trans.campaignId = CPS.app.campaignid;
-            trans.transName = dmp.targetName+"_"+dateStr;
+            if(dmp.targetName.length>20){
+                trans.transName = dmp.targetName.substr(0,20) + "_" + dateStr;
+            }else {
+                trans.transName = dmp.targetName + "_" + dateStr;
+            }
             trans.transAdzoneBinds = [];
             trans.intelligentBid = 1;
             trans.frequency = -1;
